@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PKONE 勤怠・実績Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7faf7;
+  --bg-deep: #eef5ef;
+  --panel: #ffffff;
+  --panel-soft: #f7fbf8;
+  --line: #d6e1d7;
+  --text: #18395f;
+  --muted: #6b7f98;
+  --green: #5db8ff;
+  --green-deep: #2f88d8;
+  --green-soft: #eaf6ff;
+  --blue: #4f84de;
+  --blue-soft: #edf4ff;
+  --orange: #d89a4c;
+  --orange-soft: #fff6ea;
+  --shadow-lg: 0 16px 36px rgba(20, 50, 37, 0.07);
+  --shadow-sm: 0 6px 18px rgba(20, 50, 37, 0.05);
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --title-size: 32px;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(93, 184, 255, 0.10), transparent 30%),
+    linear-gradient(180deg, #fbfdff 0%, #f1f7fd 100%);
+  max-width: 620px;
+  min-height: 100vh;
+  margin-inline: auto;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(93, 184, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(93, 184, 255, 0.03) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+a {
+  color: inherit;
+}
+.app-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 18px 18px 110px;
+}
+.hero {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 252, 248, 0.98));
+  color: var(--text);
+  border: 1px solid #dce8de;
+  border-radius: 30px;
+  padding: 20px;
+  box-shadow: var(--shadow-lg);
+}
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hero-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green-deep);
+}
+.hero h1 {
+  margin: 6px 0 0;
+  font-size: var(--title-size);
+  line-height: 1.1;
+  font-weight: 900;
+  color: var(--text);
+}
+.hero-copy {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+.hero-badge {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: var(--green-soft);
+  color: var(--green-deep);
+  font-size: 11px;
+  font-weight: 800;
+}
+.hero-bottom {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+.profile-card,
+.status-card {
+  border-radius: 22px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid #e0ebe2;
+}
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-soft);
+  color: var(--green-deep);
+  font-size: 18px;
+  font-weight: 900;
+}
+.profile-card small,
+.status-card small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+.profile-card strong,
+.status-card strong {
+  display: block;
+  margin-top: 4px;
+}
+.status-card strong {
+  font-size: 22px;
+  line-height: 1.1;
+}
+.section {
+  margin-top: 16px;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+.home-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 20px 20px;
+  border: 1px solid rgba(118, 173, 228, 0.34);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.985), rgba(246, 251, 255, 0.97));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 18px 42px rgba(49, 103, 173, 0.08),
+    0 0 0 1px rgba(111, 169, 248, 0.10);
+}
+.home-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at top right, rgba(93, 166, 255, 0.16), transparent 22%),
+    radial-gradient(circle at top left, rgba(93, 184, 255, 0.08), transparent 30%),
+    linear-gradient(135deg, rgba(93, 166, 255, 0.05) 0, rgba(93, 166, 255, 0.05) 1px, transparent 1px, transparent 22px);
+  background-size: auto, auto, 22px 22px;
+}
+.home-panel::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 0;
+  height: 4px;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(90deg, rgba(63, 132, 229, 0.18), rgba(63, 132, 229, 0.9), rgba(63, 132, 229, 0.18));
+  box-shadow: 0 0 18px rgba(63, 132, 229, 0.24);
+}
+.home-panel > * {
+  position: relative;
+  z-index: 1;
+}
+.home-panel .section-head {
+  margin-bottom: 18px;
+}
+.home-panel .section-head h2 {
+  font-size: 21px;
+}
+.home-panel .badge {
+  background: linear-gradient(180deg, #f5fbff, #eaf6ff);
+  border: 1px solid rgba(93, 184, 255, 0.18);
+  box-shadow: 0 6px 16px rgba(93, 184, 255, 0.08);
+}
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.section-head h2 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.2;
+}
+.section-head p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.badge {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 8px 11px;
+  background: #eef7ff;
+  color: var(--green-deep);
+  font-size: 11px;
+  font-weight: 800;
+}
+.button-rich-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.button-rich-grid.primary-actions {
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: 4px;
+}
+.primary-menu-visual {
+  position: relative;
+  width: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 18px 34px rgba(37, 83, 156, 0.14);
+}
+.primary-menu-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.primary-menu-hitareas {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.primary-menu-hitareas button {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.primary-menu-hitareas button:active {
+  background: rgba(22, 66, 132, 0.08);
+}
+.button-rich-grid.secondary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 16px;
+}
+.rich-btn {
+  min-height: 112px;
+  border-radius: 22px;
+  padding: 14px 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(249, 252, 255, 0.96));
+  border: 1px solid rgba(186, 206, 226, 0.62);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 8px 18px rgba(36, 75, 133, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.rich-btn:hover,
+.rich-btn:active {
+  transform: translateY(-1px);
+  border-color: rgba(79, 132, 222, 0.28);
+  box-shadow: 0 12px 24px rgba(79, 132, 222, 0.10);
+}
+.rich-btn-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+}
+.rich-btn-mark.green {
+  background: var(--green-soft);
+  color: var(--green-deep);
+}
+.rich-btn-mark.blue {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+.rich-btn-mark.orange {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+.rich-btn strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.rich-btn span {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.mini-card {
+  border-radius: 20px;
+  padding: 14px;
+  background: #fcfefd;
+  border: 1px solid #e0eae2;
+}
+.mini-card small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.mini-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+.meter-wrap {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.tone-card {
+  border-radius: 22px;
+  padding: 16px;
+  color: var(--text);
+  border: 1px solid #e0ebe2;
+}
+.tone-card.green {
+  background: linear-gradient(180deg, #ffffff 0%, #eff9f2 100%);
+}
+.tone-card.blue {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f6ff 100%);
+}
+.tone-card.orange {
+  background: linear-gradient(180deg, #ffffff 0%, #fff7ee 100%);
+}
+.tone-card small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.tone-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 26px;
+}
+.meter-wrap.compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.meter-wrap.compact .tone-card {
+  padding: 14px;
+}
+.meter-wrap.compact .tone-card strong {
+  font-size: 22px;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stack-card {
+  border-radius: 22px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #dfe9e1;
+}
+.stack-card strong {
+  display: block;
+  font-size: 14px;
+}
+.stack-card span {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.compact-field-grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+.manager-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(238, 247, 255, 0.96), rgba(248, 252, 255, 0.96));
+  border: 1px solid rgba(186, 206, 226, 0.62);
+}
+.manager-bar p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.manager-toggle {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #eef7ff;
+  color: var(--green-deep);
+  border: 1px solid rgba(93, 184, 255, 0.28);
+  font-weight: 800;
+}
+.manager-toggle.active {
+  background: linear-gradient(135deg, #69c2ff, #3f95e6);
+  color: #fff;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fff;
+  color: var(--text);
+  padding: 12px 13px;
+  outline: none;
+}
+.field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: rgba(15, 140, 91, 0.42);
+  box-shadow: 0 0 0 3px rgba(15, 140, 91, 0.12);
+}
+.field.compact label {
+  font-size: 10px;
+}
+.field.compact select,
+.field.compact input {
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: 13px;
+}
+.mini-badge {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 13px;
+  background: #eef7ff;
+  color: var(--green-deep);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.action-row,
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.button-row.triple {
+  grid-template-columns: repeat(3, 1fr);
+}
+.primary-btn,
+.secondary-btn,
+.soft-btn {
+  min-height: 52px;
+  border-radius: 16px;
+  font-weight: 800;
+}
+.primary-btn {
+  background: linear-gradient(135deg, #69c2ff, #3f95e6);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(93, 184, 255, 0.18);
+}
+.primary-btn.out {
+  background: linear-gradient(135deg, #5d8fe5, #4c79cd);
+  box-shadow: 0 8px 18px rgba(79, 132, 222, 0.18);
+}
+.secondary-btn {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+.soft-btn {
+  background: #eef7ff;
+  color: var(--green-deep);
+}
+.month-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+.table-wrap {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+th,
+td {
+  padding: 10px 4px;
+  text-align: left;
+  border-bottom: 1px solid #e8efea;
+  white-space: nowrap;
+}
+th {
+  font-size: 11px;
+  color: var(--muted);
+}
+.request-sheet {
+  margin-top: 12px;
+  border: 2px solid #304238;
+  border-radius: 20px;
+  padding: 16px;
+  background: #fff;
+}
+.request-sheet h3 {
+  margin: 0 0 10px;
+  text-align: center;
+  font-size: 20px;
+}
+.request-line {
+  padding: 7px 0;
+  border-bottom: 1px solid #dbe4dd;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.history-list,
+.list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.history-item,
+.info-item {
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 12px 14px;
+}
+.history-item strong,
+.info-item strong {
+  display: block;
+  font-size: 13px;
+}
+.history-item span,
+.info-item span {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.calendar-item {
+  border-radius: 18px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e0eae2;
+}
+.calendar-item strong {
+  display: block;
+  font-size: 14px;
+}
+.calendar-item span {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.notice-strip {
+  margin-top: 12px;
+  border-radius: 18px;
+  background: #fcfefd;
+  border: 1px solid var(--line);
+  padding: 14px;
+}
+.notice-strip strong {
+  display: block;
+  font-size: 14px;
+}
+.notice-strip span {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.chat-shell {
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: #fbfdfa;
+  min-height: 260px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chat-row {
+  display: flex;
+}
+.chat-row.user {
+  justify-content: flex-end;
+}
+.chat-bubble {
+  max-width: 88%;
+  border-radius: 18px;
+  padding: 11px 13px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.chat-row.bot .chat-bubble {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top-left-radius: 6px;
+}
+.chat-row.user .chat-bubble {
+  background: var(--green-soft);
+  border: 1px solid rgba(15, 140, 91, 0.18);
+  border-top-right-radius: 6px;
+}
+.chat-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 12px;
+}
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: min(584px, calc(100% - 24px));
+  z-index: 5;
+  border-radius: 24px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(214, 225, 215, 0.92);
+  box-shadow: 0 12px 28px rgba(20, 50, 37, 0.08);
+  backdrop-filter: blur(12px);
+}
+.dock-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.dock-btn {
+  min-height: 58px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+.dock-btn strong {
+  font-size: 16px;
+  line-height: 1;
+}
+.dock-btn.active {
+  background: #eef7ff;
+  color: var(--green-deep);
+}
+.empty {
+  padding: 20px 8px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 560px) {
+  .app-shell {
+    padding-inline: 14px;
+  }
+  .hero-bottom,
+  .meter-wrap,
+  .field-grid,
+  .action-row,
+  .button-row,
+  .month-row,
+  .chat-input-row,
+  .calendar-grid,
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  .button-rich-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .button-rich-grid.primary-actions {
+    grid-template-columns: 1fr;
+  }
+  .button-rich-grid.secondary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .compact-field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media print {
+  .dock,
+  .button-rich-grid,
+  .button-rich-grid.secondary,
+  .hero-copy,
+  .section:not(.printable) {
+    display: none !important;
+  }
+  body,
+  .app-shell {
+    max-width: none;
+    background: #fff;
+    padding: 0;
+  }
+  .hero {
+    color: #000;
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="hero-label"><?= companyName ?> 社内専用アプリ</div>
+        <h1>PKONE 勤怠・実績Bot</h1>
+        <div class="hero-copy">出勤、退勤、活動報告、有休申請、相談を1画面で整理するための現場向けホームです。</div>
+      </div>
+      <div class="hero-badge">LINE連動想定</div>
+    </div>
+    <div class="hero-bottom">
+      <div class="profile-card">
+        <div class="profile-mark" id="hero-initial">浅</div>
+        <div>
+          <small>担当者</small>
+          <strong id="hero-name">浅野隆史</strong>
+          <small id="hero-dept">営業</small>
+        </div>
+      </div>
+      <div class="status-card">
+        <small>本日の状態</small>
+        <strong id="hero-status">未打刻</strong>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="home-screen">
+      <section class="section home-panel">
+        <div class="section-head">
+          <div>
+            <h2>ホーム</h2>
+            <p>上段は毎日使うボタンです。下段に申請、カレンダー、相談をまとめています。</p>
+          </div>
+          <div class="badge">最優先</div>
+        </div>
+        <div class="button-rich-grid primary-actions">
+          <div class="primary-menu-visual">
+            <img src="ig_07da6d5efb953e7a016a26a8d45eb4819f8ec0335bdb004c75.png" alt="出勤 退勤 報告 リッチメニュー">
+            <div class="primary-menu-hitareas">
+              <button aria-label="出勤" onclick="activateQuickAction('clock-in')"></button>
+              <button aria-label="退勤" onclick="activateQuickAction('clock-out')"></button>
+              <button aria-label="報告" onclick="showSection('report')"></button>
+            </div>
+          </div>
+        </div>
+        <div class="button-rich-grid secondary">
+          <button class="rich-btn" onclick="showSection('inquiry')">
+            <div class="rich-btn-mark green">問</div>
+            <div><strong>問い合わせ</strong><span>修正依頼を残す</span></div>
+          </button>
+          <button class="rich-btn" onclick="showSection('schedule')">
+            <div class="rich-btn-mark blue">今</div>
+            <div><strong>本日の予定</strong><span>稼働か休みか確認</span></div>
+          </button>
+          <button class="rich-btn" onclick="showSection('leave')">
+            <div class="rich-btn-mark orange">休</div>
+            <div><strong>有休・振替申請</strong><span>申請書を作る</span></div>
+          </button>
+          <button class="rich-btn" onclick="showSection('attendance')">
+            <div class="rich-btn-mark green">勤</div>
+            <div><strong>勤怠確認</strong><span>月末チェック</span></div>
+          </button>
+          <button class="rich-btn" onclick="showSection('calendar')">
+            <div class="rich-btn-mark blue">年</div>
+            <div><strong>年間カレンダー</strong><span>6月から翌5月を確認</span></div>
+          </button>
+          <button class="rich-btn" onclick="showSection('chat')">
+            <div class="rich-btn-mark orange">相</div>
+            <div><strong>相談</strong><span>AIでたたき台を返す</span></div>
+          </button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>担当情報と本日状況</h2>
+            <p id="identity-copy">本人を自動判定して、その人の打刻と申請履歴だけを表示します。</p>
+          </div>
+          <div class="badge" id="today-badge">未打刻</div>
+        </div>
+        <div id="manager-bar" class="manager-bar" hidden>
+          <p id="manager-copy">管理者モードをオンにすると、社員を切り替えて確認できます。</p>
+          <button id="manager-toggle" class="manager-toggle" onclick="toggleAdminMode()">管理者切替</button>
+        </div>
+        <div class="compact-field-grid">
+          <div class="field compact" id="attendance-dept-wrap">
+            <label for="attendance-dept">所属</label>
+            <select id="attendance-dept" onchange="updateEmployeeSelect('attendance')"></select>
+          </div>
+          <div class="field compact" id="attendance-name-wrap">
+            <label for="attendance-name">氏名</label>
+            <select id="attendance-name" onchange="renderDashboard()"></select>
+          </div>
+          <div class="mini-badge" id="today-status-text">本日 未打刻</div>
+        </div>
+        <div class="meter-wrap compact">
+          <div class="tone-card green">
+            <small>今日の出勤</small>
+            <strong id="today-in">未打刻</strong>
+          </div>
+          <div class="tone-card blue">
+            <small>今日の退勤</small>
+            <strong id="today-out">未打刻</strong>
+          </div>
+          <div class="tone-card orange">
+            <small>勤務時間</small>
+            <strong id="today-hours">-</strong>
+          </div>
+        </div>
+        <div class="button-row triple">
+          <button class="primary-btn" id="clock-btn" onclick="toggleClock()">出勤する</button>
+          <button class="secondary-btn" onclick="fixTodayRecord()">今日を修正</button>
+          <button class="secondary-btn" onclick="adjustTodayRecord()">時間を変更</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>今月の確認</h2>
+            <p>月末に本人が確認できるように、日数、時間、未完了をすぐ見える形にしています。</p>
+          </div>
+          <div class="badge" id="month-confirm-badge">未確認</div>
+        </div>
+        <div class="month-row">
+          <div class="field">
+            <label for="month-picker">対象月</label>
+            <input id="month-picker" type="month" onchange="renderDashboard()">
+          </div>
+          <button class="soft-btn" onclick="confirmMonth()">月末確認</button>
+        </div>
+        <div class="card-grid" style="margin-top:12px;">
+          <div class="mini-card"><small>出勤日</small><strong id="sum-days">0</strong></div>
+          <div class="mini-card"><small>勤務時間</small><strong id="sum-hours">0.0</strong></div>
+          <div class="mini-card"><small>未完了</small><strong id="sum-missing">0</strong></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>出勤</th>
+                <th>退勤</th>
+                <th>時間</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-list"></tbody>
+          </table>
+        </div>
+        <div class="action-row">
+          <button class="secondary-btn" onclick="downloadAttendanceCsv()">CSV保存</button>
+          <button class="secondary-btn" onclick="window.print()">印刷</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>直近の申請</h2>
+            <p>有休、振休、振替出勤などの最新内容をこの場で確認できます。</p>
+          </div>
+        </div>
+        <div id="request-history" class="empty">まだ申請はありません。</div>
+      </section>
+    </section>
+
+    <section id="attendance-screen" class="section" hidden>
+      <div class="section-head">
+        <div>
+          <h2>勤怠確認</h2>
+          <p>手入力の修正、履歴確認、保存をここで行います。</p>
+        </div>
+        <div class="badge">勤怠一覧</div>
+      </div>
+      <div class="action-row" style="margin-top:0;">
+        <button class="secondary-btn" onclick="addManualRecord()">手入力で追加</button>
+        <button class="secondary-btn" onclick="downloadAttendanceCsv()">勤怠CSVを保存</button>
+      </div>
+      <div class="list-stack" id="attendance-info-list" style="margin-top:12px;"></div>
+    </section>
+
+    <section id="leave-screen" class="section printable" hidden>
+      <div class="section-head">
+        <div>
+          <h2>有休・振替申請書作成</h2>
+          <p>所属と氏名を選び、日付と理由を入れると、そのまま提出用の形で表示します。</p>
+        </div>
+        <div class="badge">提出用</div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="req-dept">所属</label>
+          <select id="req-dept" onchange="updateEmployeeSelect('req')"></select>
+        </div>
+        <div class="field">
+          <label for="req-name">氏名</label>
+          <select id="req-name"></select>
+        </div>
+      </div>
+      <div class="field-grid" style="margin-top:10px;">
+        <div class="field">
+          <label for="req-type">申請種類</label>
+          <select id="req-type">
+            <option>有給休暇</option>
+            <option>半休</option>
+            <option>振休</option>
+            <option>振替出勤</option>
+            <option>遅刻</option>
+            <option>早退</option>
+            <option>欠勤</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="req-days">日数</label>
+          <input id="req-days" type="number" min="0.5" step="0.5" value="1">
+        </div>
+      </div>
+      <div class="field-grid" style="margin-top:10px;">
+        <div class="field">
+          <label for="req-start">開始日</label>
+          <input id="req-start" type="date">
+        </div>
+        <div class="field">
+          <label for="req-end">終了日</label>
+          <input id="req-end" type="date">
+        </div>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="req-reason">理由</label>
+        <textarea id="req-reason" placeholder="例：私用のため、有給休暇を申請します。"></textarea>
+      </div>
+      <div class="button-row">
+        <button class="primary-btn" onclick="createLeaveRequest()">申請書を作成する</button>
+        <button class="secondary-btn" onclick="saveLeaveRequest()">申請履歴に保存</button>
+      </div>
+      <div id="request-output"></div>
+    </section>
+
+    <section id="report-screen" class="section" hidden>
+      <div class="section-head">
+        <div>
+          <h2>活動報告</h2>
+          <p>既存のGoogleフォームに入力し、そのまま集計シートへ流す前提です。</p>
+        </div>
+        <div class="badge">既存活用</div>
+      </div>
+      <div class="stack">
+        <a class="stack-card" href="https://docs.google.com/forms/d/e/1FAIpQLSeIRWHeCwt2ceYJOkXPrVxw49ay0FWE05zymPRCPGgBv7fu0g/viewform" target="_blank" rel="noopener noreferrer">
+          <strong>活動報告フォームを開く</strong>
+          <span>担当、活動エリア、訪問、面談、見込、アポ、申込、実績、備考を入力する入口です。</span>
+        </a>
+        <a class="stack-card" href="https://docs.google.com/spreadsheets/d/16edaqrL-WnT1Df_qsd4fhOfPkuwrGMZjqZ30N8bobO4/edit?gid=917900482#gid=917900482" target="_blank" rel="noopener noreferrer">
+          <strong>集計シートを開く</strong>
+          <span>日別個人実績と営業日報の集計確認へ移動します。</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="schedule-screen" class="section" hidden>
+      <div class="section-head">
+        <div>
+          <h2>出勤カレンダー・年間カレンダー</h2>
+          <p>LINE WORKSカレンダーへ入れる勤務ルールを、社員ごとに整理した見せ方です。</p>
+        </div>
+        <div class="badge">定休日管理</div>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+      <div class="notice-strip">
+        <strong>本日の予定</strong>
+        <span id="today-schedule-text">本日は通常稼働日です。定休日や有休申請が入った際はここを変更します。</span>
+      </div>
+      <div class="notice-strip">
+        <strong>会社年間カレンダー</strong>
+        <span>6月から翌年5月までの予定稼働日、有休、振休、振替出勤をこの流れで一覧化する想定です。</span>
+      </div>
+    </section>
+
+    <section id="inquiry-screen" class="section" hidden>
+      <div class="section-head">
+        <div>
+          <h2>問い合わせ</h2>
+          <p>打刻漏れ、予定変更、修正依頼を短く残すための受付です。</p>
+        </div>
+        <div class="badge">現場受付</div>
+      </div>
+      <div class="field">
+        <label for="inquiry-text">問い合わせ内容</label>
+        <textarea id="inquiry-text" placeholder="例：6月8日の退勤が漏れています。18:40で修正希望。"></textarea>
+      </div>
+      <div class="button-row">
+        <button class="primary-btn" onclick="saveInquiry()">問い合わせを保存</button>
+        <button class="secondary-btn" onclick="showSection('chat')">相談へ進む</button>
+      </div>
+      <div id="inquiry-history" class="history-list" style="margin-top:12px;"></div>
+    </section>
+
+    <section id="chat-screen" class="section" hidden>
+      <div class="section-head">
+        <div>
+          <h2>相談</h2>
+          <p>困りごとを入れると、まず何を整理すべきかをすぐ返す簡易画面です。</p>
+        </div>
+        <div class="badge">AI下書き</div>
+      </div>
+      <div class="chat-shell" id="chat-log"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text" placeholder="相談内容を入力してください" onkeydown="handleChatKey(event)">
+        <button class="primary-btn" style="min-width:112px;" onclick="sendChat()">送信</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="dock">
+  <div class="dock-grid">
+    <button class="dock-btn active" data-dock="home" onclick="showSection('home')"><strong>家</strong><span>ホーム</span></button>
+    <button class="dock-btn" data-dock="attendance" onclick="showSection('attendance')"><strong>勤</strong><span>勤怠</span></button>
+    <button class="dock-btn" data-dock="leave" onclick="showSection('leave')"><strong>申</strong><span>申請</span></button>
+    <button class="dock-btn" data-dock="chat" onclick="showSection('chat')"><strong>相</strong><span>相談</span></button>
+  </div>
+</div>
+
+<script>
+const ATTENDANCE_KEY = 'assist_attendance_records_v2';
+const CONFIRM_KEY = 'assist_attendance_confirm_v2';
+const REQUEST_KEY = 'assist_leave_requests_v2';
+const INQUIRY_KEY = 'assist_inquiries_v1';
+const CURRENT_USER_KEY = 'assist_current_user_v1';
+const ADMIN_MODE_KEY = 'assist_admin_mode_v1';
+
+const DEPARTMENT_MEMBERS = {
+  '営業': ['浅野隆史', '遠藤翔太', '小林孝弘', '西沢洋一郎'],
+  'メンテ': ['中西浩樹', '鈴木晟也']
+};
+
+const MEMBER_RULES = {
+  '浅野隆史': { dept: '営業', holidays: ['火', '水'], start: '09:30', end: '18:30', breakMinutes: 60, overtimePaid: false },
+  '遠藤翔太': { dept: '営業', holidays: ['火', '水'], start: '09:30', end: '18:30', breakMinutes: 60, overtimePaid: false },
+  '小林孝弘': { dept: '営業', holidays: ['火', '水'], start: '09:30', end: '18:30', breakMinutes: 60, overtimePaid: false },
+  '西沢洋一郎': { dept: '営業', holidays: ['火', '水'], start: '09:30', end: '18:30', breakMinutes: 60, overtimePaid: false },
+  '中西浩樹': { dept: 'メンテ', holidays: ['日', '金'], start: '09:00', end: '18:00', breakMinutes: 60, overtimePaid: true },
+  '鈴木晟也': { dept: 'メンテ', holidays: ['月', '火'], start: '09:30', end: '18:30', breakMinutes: 60, overtimePaid: true }
+};
+const ADMIN_USERS = ['浅野隆史'];
+
+const CHAT_RESPONSES = {
+  harassment: 'まず記録を残してください。いつ、どこで、誰から、何を言われたかを短く書くと、次の判断が早くなります。',
+  mental: '無理を続ける前に休む判断を優先してください。眠れない、食べられない、出社が苦しい場合は、有休や受診相談を先に進めるべきです。',
+  labor: '労務の話は感覚より記録です。勤怠、給与明細、契約条件の3点を揃えると判断しやすくなります。',
+  trouble: '現場トラブルは順番が大事です。安全確認、上司報告、事実記録、次の対応の順で整理してください。',
+  inquiry: '問い合わせは、誰の件か、いつの件か、何を直したいかの3点を一文にすると管理側が動きやすくなります。'
+};
+
+let currentRequest = null;
+
+function findEmployeeByName(name) {
+  const dept = Object.keys(DEPARTMENT_MEMBERS).find(function(group) {
+    return DEPARTMENT_MEMBERS[group].indexOf(name) >= 0;
+  });
+  return dept ? { dept: dept, name: name } : null;
+}
+
+function getCurrentSessionEmployee() {
+  const params = new URLSearchParams(window.location.search);
+  const queryName = params.get('user');
+  if (queryName) {
+    const queryEmployee = findEmployeeByName(queryName);
+    if (queryEmployee) {
+      saveJson(CURRENT_USER_KEY, queryEmployee);
+      return queryEmployee;
+    }
+  }
+
+  const saved = loadJson(CURRENT_USER_KEY, null);
+  if (saved && saved.name && saved.dept) {
+    return saved;
+  }
+
+  const fallback = { dept: '営業', name: '浅野隆史' };
+  saveJson(CURRENT_USER_KEY, fallback);
+  return fallback;
+}
+
+function isAdminUser(employee) {
+  return ADMIN_USERS.indexOf(employee.name) >= 0;
+}
+
+function isAdminMode() {
+  return loadJson(ADMIN_MODE_KEY, false) && isAdminUser(getCurrentSessionEmployee());
+}
+
+function loadJson(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function saveJson(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function esc(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function formatDateKey(date) {
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+
+function formatTimeKey(date) {
+  return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+}
+
+function monthKey(date) {
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+}
+
+function weekdayJa(dateText) {
+  const parts = dateText.split('-').map(Number);
+  const date = new Date(parts[0], parts[1] - 1, parts[2]);
+  return ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
+}
+
+function getMemberRule(name) {
+  return MEMBER_RULES[name] || { dept: '', holidays: [], start: '09:00', end: '18:00', breakMinutes: 60, overtimePaid: true };
+}
+
+function getEmployeeRule(employee) {
+  return getMemberRule(employee.name);
+}
+
+function calcHours(start, end, employee) {
+  if (!start || !end) return 0;
+  const s = start.split(':').map(Number);
+  const e = end.split(':').map(Number);
+  const rule = getEmployeeRule(employee || getSelectedEmployee());
+  const workedMinutes = Math.max(0, (e[0] * 60 + e[1]) - (s[0] * 60 + s[1]));
+  const actualMinutes = Math.max(0, workedMinutes - (rule.breakMinutes || 0));
+  const standardStart = rule.start.split(':').map(Number);
+  const standardEnd = rule.end.split(':').map(Number);
+  const standardMinutes = Math.max(0, ((standardEnd[0] * 60 + standardEnd[1]) - (standardStart[0] * 60 + standardStart[1])) - (rule.breakMinutes || 0));
+  const countedMinutes = rule.overtimePaid ? actualMinutes : Math.min(actualMinutes, standardMinutes);
+  return countedMinutes / 60;
+}
+
+function getDefaultRepairTimes(employee) {
+  const rule = getEmployeeRule(employee);
+  return { start: rule.start, end: rule.end };
+}
+
+function saveRecordForEmployee(employee, date, start, end, note) {
+  const records = loadJson(ATTENDANCE_KEY, []).filter(function(record) {
+    return !(record.date === date && isSameEmployee(record, employee));
+  });
+  records.push({
+    date: date,
+    dept: employee.dept,
+    name: employee.name,
+    in: (start || '').trim(),
+    out: (end || '').trim(),
+    note: (note || '').trim()
+  });
+  saveJson(ATTENDANCE_KEY, records);
+}
+
+function showSection(name) {
+  const map = {
+    home: 'home-screen',
+    attendance: 'attendance-screen',
+    leave: 'leave-screen',
+    report: 'report-screen',
+    schedule: 'schedule-screen',
+    inquiry: 'inquiry-screen',
+    chat: 'chat-screen',
+    calendar: 'schedule-screen'
+  };
+  Object.values(map).forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.hidden = true;
+  });
+  document.getElementById(map[name]).hidden = false;
+  document.querySelectorAll('.dock-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.dock === name);
+  });
+  if (name === 'home' || name === 'attendance') renderDashboard();
+  if (name === 'schedule' || name === 'calendar') renderCalendarCards();
+}
+
+function fillDepartmentSelect(id) {
+  const el = document.getElementById(id);
+  el.innerHTML = Object.keys(DEPARTMENT_MEMBERS).map(function(dept) {
+    return '<option value="' + esc(dept) + '">' + esc(dept) + '</option>';
+  }).join('');
+}
+
+function updateEmployeeSelect(prefix) {
+  const deptEl = document.getElementById(prefix + '-dept');
+  const nameEl = document.getElementById(prefix + '-name');
+  const dept = deptEl.value || '営業';
+  const members = DEPARTMENT_MEMBERS[dept] || [];
+  const current = nameEl.value;
+  nameEl.innerHTML = members.map(function(name) {
+    return '<option value="' + esc(name) + '">' + esc(name) + '</option>';
+  }).join('');
+  if (members.indexOf(current) >= 0) {
+    nameEl.value = current;
+  }
+  if (prefix === 'attendance') {
+    syncRequestEmployee();
+    renderDashboard();
+  }
+}
+
+function syncRequestEmployee() {
+  const reqDept = document.getElementById('req-dept');
+  const reqName = document.getElementById('req-name');
+  const employee = getSelectedEmployee();
+  reqDept.value = employee.dept;
+  updateEmployeeSelect('req');
+  reqName.value = employee.name;
+}
+
+function getSelectedEmployee() {
+  if (!isAdminMode()) {
+    return getCurrentSessionEmployee();
+  }
+  return {
+    dept: document.getElementById('attendance-dept').value || '営業',
+    name: document.getElementById('attendance-name').value || '浅野隆史'
+  };
+}
+
+function toggleAdminMode() {
+  const employee = getCurrentSessionEmployee();
+  if (!isAdminUser(employee)) return;
+  saveJson(ADMIN_MODE_KEY, !isAdminMode());
+  syncRequestEmployee();
+  renderDashboard();
+}
+
+function renderIdentityMode() {
+  const currentUser = getCurrentSessionEmployee();
+  const admin = isAdminUser(currentUser);
+  const adminMode = isAdminMode();
+  const deptWrap = document.getElementById('attendance-dept-wrap');
+  const nameWrap = document.getElementById('attendance-name-wrap');
+  const managerBar = document.getElementById('manager-bar');
+  const managerCopy = document.getElementById('manager-copy');
+  const managerToggle = document.getElementById('manager-toggle');
+  const identityCopy = document.getElementById('identity-copy');
+  const reqDept = document.getElementById('req-dept');
+  const reqName = document.getElementById('req-name');
+
+  managerBar.hidden = !admin;
+  deptWrap.hidden = !adminMode;
+  nameWrap.hidden = !adminMode;
+  reqDept.disabled = !adminMode;
+  reqName.disabled = !adminMode;
+
+  if (admin) {
+    managerCopy.textContent = adminMode
+      ? '管理者モード中です。6名を切り替えて確認できます。'
+      : '社員画面では本人を自動表示します。必要な時だけ管理者切替を使います。';
+    managerToggle.textContent = adminMode ? '社員画面へ戻す' : '管理者切替';
+    managerToggle.classList.toggle('active', adminMode);
+  }
+
+  identityCopy.textContent = adminMode
+    ? '管理者モードで社員を切り替えています。選んだ人の打刻と申請履歴を表示します。'
+    : '本人を自動判定して、その人の打刻と申請履歴だけを表示します。';
+}
+
+function isSameEmployee(record, employee) {
+  if (!record.dept && !record.name) {
+    return employee.dept === '営業' && employee.name === '浅野隆史';
+  }
+  return record.dept === employee.dept && record.name === employee.name;
+}
+
+function getEmployeeRecords() {
+  const employee = getSelectedEmployee();
+  return loadJson(ATTENDANCE_KEY, []).filter(function(record) {
+    return isSameEmployee(record, employee);
+  });
+}
+
+function getTodayRecord() {
+  const today = formatDateKey(new Date());
+  const employee = getSelectedEmployee();
+  return loadJson(ATTENDANCE_KEY, []).find(function(record) {
+    return record.date === today && isSameEmployee(record, employee);
+  });
+}
+
+function activateQuickAction(type) {
+  if (type === 'clock-in') {
+    const today = getTodayRecord();
+    if (!today || !today.in) {
+      toggleClock();
+    } else {
+      showSection('attendance');
+    }
+    return;
+  }
+  if (type === 'clock-out') {
+    const today = getTodayRecord();
+    if (today && !today.out) {
+      toggleClock();
+    } else {
+      showSection('attendance');
+    }
+  }
+}
+
+function toggleClock() {
+  const employee = getSelectedEmployee();
+  const records = loadJson(ATTENDANCE_KEY, []);
+  const now = new Date();
+  const today = formatDateKey(now);
+  let record = records.find(function(item) {
+    return item.date === today && isSameEmployee(item, employee);
+  });
+  if (!record) {
+    record = { date: today, dept: employee.dept, name: employee.name, in: formatTimeKey(now), out: '', note: '' };
+    records.push(record);
+  } else if (!record.out) {
+    record.out = formatTimeKey(now);
+  } else {
+    alert('今日はすでに出勤と退勤が記録されています。');
+    return;
+  }
+  saveJson(ATTENDANCE_KEY, records);
+  renderDashboard();
+}
+
+function clearTodayRecord() {
+  const employee = getSelectedEmployee();
+  const today = formatDateKey(new Date());
+  const keep = loadJson(ATTENDANCE_KEY, []).filter(function(record) {
+    return !(record.date === today && isSameEmployee(record, employee));
+  });
+  saveJson(ATTENDANCE_KEY, keep);
+  renderDashboard();
+}
+
+function fixTodayRecord() {
+  const employee = getSelectedEmployee();
+  const today = formatDateKey(new Date());
+  const defaults = getDefaultRepairTimes(employee);
+  saveRecordForEmployee(employee, today, defaults.start, defaults.end, '打刻漏れ補完');
+  renderDashboard();
+}
+
+function adjustTodayRecord() {
+  const employee = getSelectedEmployee();
+  const today = formatDateKey(new Date());
+  const current = getTodayRecord() || { in: '', out: '', note: '' };
+  const defaults = getDefaultRepairTimes(employee);
+
+  const start = prompt('出勤時刻を入力してください。遅刻や早出がある日はここで調整します。', current.in || defaults.start);
+  if (start === null) return;
+  const end = prompt('退勤時刻を入力してください。早退や残業がある日はここで調整します。', current.out || defaults.end);
+  if (end === null) return;
+  const memo = prompt('変更理由を入力してください。', current.note || '時間調整');
+  if (memo === null) return;
+
+  saveRecordForEmployee(employee, today, start, end, memo || '時間調整');
+  renderDashboard();
+}
+
+function addManualRecord() {
+  const employee = getSelectedEmployee();
+  const defaults = getDefaultRepairTimes(employee);
+  const date = prompt('日付を入力してください', formatDateKey(new Date()));
+  if (!date) return;
+  const start = prompt('出勤時間を入力してください', defaults.start);
+  if (!start) return;
+  const end = prompt('退勤時間を入力してください', defaults.end);
+  saveRecordForEmployee(employee, date, start, end || '', '手入力');
+  renderDashboard();
+}
+
+function confirmMonth() {
+  const month = document.getElementById('month-picker').value || monthKey(new Date());
+  const employee = getSelectedEmployee();
+  const confirms = loadJson(CONFIRM_KEY, {});
+  confirms[employee.dept + '_' + employee.name + '_' + month] = formatDateKey(new Date());
+  saveJson(CONFIRM_KEY, confirms);
+  renderDashboard();
+}
+
+function downloadAttendanceCsv() {
+  const employee = getSelectedEmployee();
+  const month = document.getElementById('month-picker').value || monthKey(new Date());
+  const rows = [['所属', '氏名', '日付', '出勤', '退勤', '勤務時間', 'メモ']];
+  getEmployeeRecords().filter(function(record) {
+    return record.date.slice(0, 7) === month;
+  }).forEach(function(record) {
+    rows.push([
+      employee.dept,
+      employee.name,
+      record.date,
+      record.in || '',
+      record.out || '',
+      calcHours(record.in, record.out, employee).toFixed(1),
+      record.note || ''
+    ]);
+  });
+  const csv = rows.map(function(row) {
+    return row.map(function(value) {
+      return '"' + String(value).replace(/"/g, '""') + '"';
+    }).join(',');
+  }).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '勤怠_' + employee.name + '_' + month + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function createLeaveRequest() {
+  const today = formatDateKey(new Date());
+  currentRequest = {
+    submitted: today,
+    dept: document.getElementById('req-dept').value || '未入力',
+    name: document.getElementById('req-name').value || '未入力',
+    type: document.getElementById('req-type').value,
+    days: document.getElementById('req-days').value || '1',
+    start: document.getElementById('req-start').value || today,
+    end: document.getElementById('req-end').value || today,
+    reason: document.getElementById('req-reason').value.trim() || '私用のため'
+  };
+  document.getElementById('request-output').innerHTML =
+    '<div class="request-sheet">' +
+    '<h3>勤怠届・有給申請書</h3>' +
+    '<div class="request-line">提出日：' + esc(currentRequest.submitted) + '</div>' +
+    '<div class="request-line">所属：' + esc(currentRequest.dept) + '</div>' +
+    '<div class="request-line">氏名：' + esc(currentRequest.name) + '　印</div>' +
+    '<div class="request-line">種類：' + esc(currentRequest.type) + '</div>' +
+    '<div class="request-line">期間：' + esc(currentRequest.start) + ' から ' + esc(currentRequest.end) + ' まで</div>' +
+    '<div class="request-line">日数：' + esc(currentRequest.days) + ' 日間</div>' +
+    '<div class="request-line">理由：' + esc(currentRequest.reason) + '</div>' +
+    '<div class="request-line">上司確認：　　　　　　　社長確認：</div>' +
+    '</div>';
+}
+
+function saveLeaveRequest() {
+  if (!currentRequest) createLeaveRequest();
+  const requests = loadJson(REQUEST_KEY, []);
+  requests.unshift(currentRequest);
+  saveJson(REQUEST_KEY, requests.slice(0, 30));
+  renderRequestHistory();
+  showSection('home');
+}
+
+function renderRequestHistory() {
+  const history = loadJson(REQUEST_KEY, []);
+  const employee = getSelectedEmployee();
+  const filtered = history.filter(function(item) {
+    return item.name === employee.name;
+  });
+  const box = document.getElementById('request-history');
+  if (!filtered.length) {
+    box.className = 'empty';
+    box.textContent = 'まだ申請はありません。';
+    return;
+  }
+  box.className = 'history-list';
+  box.innerHTML = filtered.slice(0, 4).map(function(item) {
+    return '<div class="history-item"><strong>' + esc(item.type) + ' / ' + esc(item.start) + ' - ' + esc(item.end) + '</strong><span>' + esc(item.name) + ' / ' + esc(item.reason) + '</span></div>';
+  }).join('');
+}
+
+function renderAttendanceInfo(records) {
+  const list = document.getElementById('attendance-info-list');
+  if (!records.length) {
+    list.innerHTML = '<div class="empty">まだ勤怠記録はありません。</div>';
+    return;
+  }
+  list.innerHTML = records.slice().reverse().map(function(record) {
+    const employee = { dept: record.dept || '', name: record.name || '' };
+    return '<div class="info-item"><strong>' + esc(record.date) + ' / ' + esc(record.name) + '</strong><span>出勤 ' + esc(record.in || '-') + ' / 退勤 ' + esc(record.out || '-') + ' / 時間 ' + (record.in && record.out ? calcHours(record.in, record.out, employee).toFixed(1) : '-') + '</span></div>';
+  }).join('');
+}
+
+function renderCalendarCards() {
+  const grid = document.getElementById('calendar-grid');
+  grid.innerHTML = Object.keys(MEMBER_RULES).map(function(name) {
+    const rule = MEMBER_RULES[name];
+    return '<div class="calendar-item"><strong>' + esc(name) + ' / ' + esc(rule.dept) + '</strong><span>定休日：' + esc(rule.holidays.join('・')) + '<br>標準勤務：' + esc(rule.start) + ' - ' + esc(rule.end) + '（休憩1時間）<br>通常日は時間を入れず終日予定で管理し、有休や振替時のみ修正します。</span></div>';
+  }).join('');
+
+  const employee = getSelectedEmployee();
+  const today = weekdayJa(formatDateKey(new Date()));
+  const holidays = MEMBER_RULES[employee.name].holidays;
+  document.getElementById('today-schedule-text').textContent =
+    holidays.indexOf(today) >= 0
+      ? '本日は ' + employee.name + ' さんの定休日です。LINE WORKSカレンダーでは終日休みにする想定です。'
+      : '本日は ' + employee.name + ' さんの通常稼働日です。時間を入れず終日予定で管理する想定です。';
+}
+
+function saveInquiry() {
+  const text = document.getElementById('inquiry-text').value.trim();
+  if (!text) return;
+  const employee = getSelectedEmployee();
+  const now = new Date();
+  const inquiries = loadJson(INQUIRY_KEY, []);
+  inquiries.unshift({
+    createdAt: formatDateKey(now) + ' ' + formatTimeKey(now),
+    dept: employee.dept,
+    name: employee.name,
+    text: text
+  });
+  saveJson(INQUIRY_KEY, inquiries.slice(0, 20));
+  document.getElementById('inquiry-text').value = '';
+  renderInquiryHistory();
+}
+
+function renderInquiryHistory() {
+  const employee = getSelectedEmployee();
+  const inquiries = loadJson(INQUIRY_KEY, []).filter(function(item) {
+    return item.name === employee.name;
+  });
+  const box = document.getElementById('inquiry-history');
+  if (!inquiries.length) {
+    box.innerHTML = '<div class="empty">まだ問い合わせはありません。</div>';
+    return;
+  }
+  box.innerHTML = inquiries.map(function(item) {
+    return '<div class="history-item"><strong>' + esc(item.createdAt) + '</strong><span>' + esc(item.text) + '</span></div>';
+  }).join('');
+}
+
+function detectChatCategory(text) {
+  if (/(パワハラ|セクハラ|嫌がらせ|暴言|怒鳴)/.test(text)) return 'harassment';
+  if (/(眠れ|つらい|しんどい|休みたい|メンタル)/.test(text)) return 'mental';
+  if (/(残業|給与|給料|有休|退職|契約|労働)/.test(text)) return 'labor';
+  if (/(問い合わせ|修正|確認|打刻漏れ)/.test(text)) return 'inquiry';
+  return 'trouble';
+}
+
+function addChatRow(role, text) {
+  const log = document.getElementById('chat-log');
+  const row = document.createElement('div');
+  row.className = 'chat-row ' + role;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble';
+  bubble.innerHTML = esc(text).replace(/\n/g, '<br>');
+  row.appendChild(bubble);
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  addChatRow('user', text);
+  input.value = '';
+  const category = detectChatCategory(text);
+  setTimeout(function() {
+    addChatRow('bot', CHAT_RESPONSES[category]);
+  }, 250);
+}
+
+function handleChatKey(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    sendChat();
+  }
+}
+
+function renderDashboard() {
+  const employee = getSelectedEmployee();
+  const records = getEmployeeRecords().sort(function(a, b) {
+    return a.date.localeCompare(b.date);
+  });
+  const today = getTodayRecord();
+  const month = document.getElementById('month-picker').value || monthKey(new Date());
+  const monthRecords = records.filter(function(record) {
+    return record.date.slice(0, 7) === month;
+  });
+  const totalHours = monthRecords.reduce(function(sum, record) {
+    return sum + calcHours(record.in, record.out, employee);
+  }, 0);
+  const missing = monthRecords.filter(function(record) {
+    return !record.in || !record.out;
+  }).length;
+  const confirms = loadJson(CONFIRM_KEY, {});
+  const confirmKey = employee.dept + '_' + employee.name + '_' + month;
+
+  document.getElementById('hero-name').textContent = employee.name;
+  document.getElementById('hero-dept').textContent = employee.dept;
+  document.getElementById('hero-initial').textContent = employee.name.charAt(0);
+  const currentStatus = today && today.out ? '退勤済み' : today && today.in ? '勤務中' : '未打刻';
+  document.getElementById('hero-status').textContent = currentStatus;
+  document.getElementById('today-badge').textContent = currentStatus;
+  document.getElementById('today-status-text').textContent = '本日 ' + currentStatus;
+  document.getElementById('today-in').textContent = today && today.in ? today.in : '未打刻';
+  document.getElementById('today-out').textContent = today && today.out ? today.out : '未打刻';
+  document.getElementById('today-hours').textContent = today && today.in && today.out ? calcHours(today.in, today.out, employee).toFixed(1) + 'h' : '-';
+  document.getElementById('sum-days').textContent = monthRecords.length;
+  document.getElementById('sum-hours').textContent = totalHours.toFixed(1);
+  document.getElementById('sum-missing').textContent = missing;
+  document.getElementById('month-confirm-badge').textContent = confirms[confirmKey] ? '確認済み' : '未確認';
+  renderIdentityMode();
+  syncRequestEmployee();
+
+  const clockBtn = document.getElementById('clock-btn');
+  clockBtn.classList.remove('out');
+  if (!today || !today.in) {
+    clockBtn.textContent = '出勤する';
+  } else if (!today.out) {
+    clockBtn.textContent = '退勤する';
+    clockBtn.classList.add('out');
+  } else {
+    clockBtn.textContent = '本日打刻済み';
+  }
+
+  const tbody = document.getElementById('attendance-list');
+  if (!monthRecords.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">この月の勤怠記録はまだありません。</td></tr>';
+  } else {
+    tbody.innerHTML = monthRecords.map(function(record) {
+      return '<tr><td>' + esc(record.date) + '</td><td>' + esc(record.in || '-') + '</td><td>' + esc(record.out || '-') + '</td><td>' + (record.in && record.out ? calcHours(record.in, record.out, employee).toFixed(1) : '-') + '</td></tr>';
+    }).join('');
+  }
+
+  renderAttendanceInfo(monthRecords);
+  renderRequestHistory();
+  renderInquiryHistory();
+  renderCalendarCards();
+}
+
+function initApp() {
+  const currentUser = getCurrentSessionEmployee();
+  fillDepartmentSelect('attendance-dept');
+  fillDepartmentSelect('req-dept');
+  updateEmployeeSelect('attendance');
+  document.getElementById('attendance-dept').value = currentUser.dept;
+  updateEmployeeSelect('attendance');
+  document.getElementById('attendance-name').value = currentUser.name;
+  document.getElementById('month-picker').value = monthKey(new Date());
+  document.getElementById('req-start').value = formatDateKey(new Date());
+  document.getElementById('req-end').value = formatDateKey(new Date());
+  document.getElementById('chat-log').innerHTML = '';
+  addChatRow('bot', 'こんにちは。出勤、退勤、申請、相談をこの画面で整理できます。困りごとをそのまま入力してください。');
+  renderDashboard();
+  showSection('home');
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>

@@ -1308,6 +1308,17 @@ function showSection(name) {
   });
   if (name === 'home' || name === 'attendance') renderDashboard();
   if (name === 'schedule' || name === 'calendar') renderCalendarCards();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function getInitialScreen() {
+  const params = new URLSearchParams(window.location.search);
+  const screen = params.get('screen');
+  if (screen === 'leave' || screen === 'attendance' || screen === 'chat' || screen === 'schedule' || screen === 'report' || screen === 'home') {
+    return screen;
+  }
+  if (window.location.hash === '#leave') return 'leave';
+  return 'home';
 }
 
 function fillDepartmentSelect(id) {
@@ -1772,7 +1783,7 @@ function initApp() {
   document.getElementById('chat-log').innerHTML = '';
   addChatRow('bot', 'こんにちは。出勤、退勤、申請、相談をこの画面で整理できます。困りごとをそのまま入力してください。');
   renderDashboard();
-  showSection('home');
+  showSection(getInitialScreen());
 }
 
 document.addEventListener('DOMContentLoaded', initApp);

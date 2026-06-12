@@ -540,6 +540,28 @@ a {
 .button-row.triple {
   grid-template-columns: repeat(3, 1fr);
 }
+.submit-status {
+  margin-top: 10px;
+  border-radius: 14px;
+  padding: 11px 13px;
+  font-size: 12px;
+  line-height: 1.6;
+  border: 1px solid var(--line);
+  background: #f8fbff;
+  color: var(--text);
+}
+.submit-status.working {
+  background: #edf6ff;
+  color: var(--green-deep);
+}
+.submit-status.success {
+  background: #eef9f1;
+  color: #25613b;
+}
+.submit-status.error {
+  background: #fff3f1;
+  color: #b24a3a;
+}
 .primary-btn,
 .secondary-btn,
 .soft-btn {
@@ -1050,6 +1072,7 @@ th {
         <button class="primary-btn" onclick="createLeaveRequest()">申請書を作成する</button>
         <button class="secondary-btn" onclick="saveLeaveRequest()">申請履歴に保存</button>
       </div>
+      <div id="leave-submit-status" class="submit-status" hidden></div>
       <div id="request-output"></div>
     </section>
 
@@ -1144,6 +1167,7 @@ const REQUEST_KEY = 'assist_leave_requests_v2';
 const INQUIRY_KEY = 'assist_inquiries_v1';
 const CURRENT_USER_KEY = 'assist_current_user_v1';
 const ADMIN_MODE_KEY = 'assist_admin_mode_v1';
+const LEAVE_SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyY9goHdu8nW20XiXcqhHGo39SxfRGELwwdbdhbcNSes-a4EPUIjaEYnw8Th9Zu4s7MyQ/exec';
 
 const DEPARTMENT_MEMBERS = {
   '営業': ['浅野隆史', '遠藤翔太', '小林孝弘', '西沢洋一郎'],
@@ -1169,6 +1193,58 @@ const CHAT_RESPONSES = {
 };
 
 let currentRequest = null;
+
+function buildClientRequestId() {
+  return 'leave-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+}
+
+function setLeaveSubmitStatus(message, type) {
+  const box = document.getElementById('leave-submit-status');
+  box.hidden = false;
+  box.className = 'submit-status ' + (type || '');
+  box.textContent = message;
+}
+
+function ensureLeaveRequestSaved(request) {
+  const requests = loadJson(REQUEST_KEY, []);
+  const exists = requests.some(function(item) {
+    return item.clientRequestId === request.clientRequestId;
+  });
+  if (!exists) {
+    requests.unshift(request);
+    saveJson(REQUEST_KEY, requests.slice(0, 30));
+  }
+}
+
+async function submitLeaveRequestToSheet(request) {
+  setLeaveSubmitStatus('スプレッドシートへ反映しています。少しお待ちください。', 'working');
+  const payload = new URLSearchParams({
+    action: 'submitLeaveRequest',
+    clientRequestId: request.clientRequestId,
+    submitted: request.submitted,
+    dept: request.dept,
+    name: request.name,
+    type: request.type,
+    days: request.days,
+    start: request.start,
+    end: request.end,
+    reason: request.reason,
+    source: 'kintai-leave-page'
+  });
+
+  try {
+    await fetch(LEAVE_SUBMIT_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: payload
+    });
+    setLeaveSubmitStatus('申請内容を送信しました。数秒後にスプレッドシートへ反映されます。', 'success');
+    return true;
+  } catch (error) {
+    setLeaveSubmitStatus('送信に失敗しました。通信状況を確認して、もう一度押してください。', 'error');
+    return false;
+  }
+}
 
 function findEmployeeByName(name) {
   const dept = Object.keys(DEPARTMENT_MEMBERS).find(function(group) {
@@ -1555,9 +1631,10 @@ function downloadAttendanceCsv() {
   URL.revokeObjectURL(url);
 }
 
-function createLeaveRequest() {
+async function createLeaveRequest() {
   const today = formatDateKey(new Date());
   currentRequest = {
+    clientRequestId: buildClientRequestId(),
     submitted: today,
     dept: document.getElementById('req-dept').value || '未入力',
     name: document.getElementById('req-name').value || '未入力',
@@ -1579,13 +1656,17 @@ function createLeaveRequest() {
     '<div class="request-line">理由：' + esc(currentRequest.reason) + '</div>' +
     '<div class="request-line">上司確認：　　　　　　　社長確認：</div>' +
     '</div>';
+
+  const ok = await submitLeaveRequestToSheet(currentRequest);
+  if (ok) {
+    ensureLeaveRequestSaved(currentRequest);
+    renderRequestHistory();
+  }
 }
 
-function saveLeaveRequest() {
-  if (!currentRequest) createLeaveRequest();
-  const requests = loadJson(REQUEST_KEY, []);
-  requests.unshift(currentRequest);
-  saveJson(REQUEST_KEY, requests.slice(0, 30));
+async function saveLeaveRequest() {
+  if (!currentRequest) await createLeaveRequest();
+  ensureLeaveRequestSaved(currentRequest);
   renderRequestHistory();
   showSection('home');
 }

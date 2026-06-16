@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1e3557">
-<title>NSL相談所 | 個人事業主・中小企業のためのAI経営サポート</title>
+<meta name="theme-color" content="#0b2c57">
+<meta name="description" content="NSL相談所は、企業様の業務整理、固定費削減、人材教育時間削減を実現する現場型AI社員サービスです。問い合わせ対応、教育、確認、報告を整理し、本業に集中できる環境を作ります。">
+<title>NSL相談所 | 一般企業向け業務削減を実現するAI社員LP</title>
 <style>
 :root {
-  --navy: #1e3557;
-  --navy-deep: #14253d;
-  --rose: #b66b7f;
-  --rose-soft: #f4dde4;
-  --champagne: #f7efe7;
-  --gold: #c7a15a;
-  --gold-soft: #f6e7c9;
-  --ivory: #fffaf6;
-  --paper: rgba(255, 255, 255, 0.8);
-  --text: #2a3340;
-  --muted: #6d7480;
-  --line: rgba(30, 53, 87, 0.12);
-  --shadow: 0 20px 50px rgba(31, 44, 71, 0.12);
-  --radius-xl: 32px;
+  --navy: #0b2c57;
+  --navy-strong: #081f3d;
+  --blue: #1d65c1;
+  --sky: #edf6ff;
+  --cyan: #49b1ff;
+  --gold: #f4b338;
+  --green: #16a25f;
+  --white: #ffffff;
+  --paper: rgba(255, 255, 255, 0.9);
+  --text: #1f2f45;
+  --muted: #64748b;
+  --line: rgba(11, 44, 87, 0.1);
+  --shadow: 0 24px 54px rgba(11, 44, 87, 0.12);
+  --radius-xl: 34px;
   --radius-lg: 24px;
   --radius-md: 18px;
   --max: 1180px;
@@ -33,48 +34,64 @@ body {
   color: var(--text);
   font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(244, 221, 228, 0.95), transparent 26%),
-    radial-gradient(circle at top right, rgba(199, 161, 90, 0.18), transparent 24%),
-    linear-gradient(180deg, #fffaf7 0%, #fff6f2 48%, #fbfcff 100%);
-  line-height: 1.8;
+    radial-gradient(circle at top left, rgba(73, 177, 255, 0.16), transparent 22%),
+    radial-gradient(circle at top right, rgba(244, 179, 56, 0.16), transparent 18%),
+    linear-gradient(180deg, #f6fbff 0%, #ffffff 36%, #f4f8fd 100%);
+  line-height: 1.75;
   overflow-x: hidden;
 }
 
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 
-.background-orb,
-.background-orb::before,
-.background-orb::after {
+.back-grid {
   position: fixed;
-  inset: auto;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  background-image:
+    linear-gradient(rgba(11, 44, 87, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 44, 87, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.5), transparent 88%);
+}
+
+.back-orb,
+.back-orb::before,
+.back-orb::after {
+  position: fixed;
+  border-radius: 999px;
   pointer-events: none;
   z-index: -1;
-  border-radius: 999px;
   filter: blur(24px);
 }
-.background-orb {
-  top: 110px;
-  left: -90px;
-  width: 280px;
-  height: 280px;
-  background: rgba(244, 221, 228, 0.75);
-}
-.background-orb::before {
-  content: "";
-  right: -68vw;
-  top: 380px;
+
+.back-orb {
+  top: 80px;
+  left: -120px;
   width: 320px;
   height: 320px;
-  background: rgba(212, 227, 245, 0.65);
+  background: rgba(73, 177, 255, 0.18);
 }
-.background-orb::after {
+
+.back-orb::before {
   content: "";
-  left: 36vw;
-  top: 70vh;
-  width: 260px;
-  height: 260px;
-  background: rgba(246, 231, 201, 0.52);
+  position: absolute;
+  right: -72vw;
+  top: 160px;
+  width: 340px;
+  height: 340px;
+  background: rgba(244, 179, 56, 0.16);
+}
+
+.back-orb::after {
+  content: "";
+  position: absolute;
+  left: 42vw;
+  top: 74vh;
+  width: 280px;
+  height: 280px;
+  background: rgba(22, 162, 95, 0.12);
 }
 
 .container {
@@ -87,15 +104,15 @@ a { color: inherit; text-decoration: none; }
   top: 0;
   z-index: 20;
   backdrop-filter: blur(16px);
-  background: rgba(255, 250, 246, 0.9);
-  border-bottom: 1px solid rgba(30, 53, 87, 0.08);
+  background: rgba(246, 251, 255, 0.9);
+  border-bottom: 1px solid rgba(11, 44, 87, 0.08);
 }
 
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 18px;
   justify-content: space-between;
+  gap: 16px;
   padding: 14px 0;
 }
 
@@ -103,33 +120,41 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 14px;
-  min-width: 0;
 }
 
 .brand-logo {
-  width: 104px;
-  height: 60px;
+  width: 96px;
+  height: 56px;
   padding: 8px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 12px 24px rgba(23, 38, 62, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(11, 44, 87, 0.08);
+  box-shadow: 0 12px 24px rgba(11, 44, 87, 0.08);
 }
 
 .brand-copy strong,
-.brand-copy span {
+.brand-copy span,
+.phone-block span,
+.phone-block strong {
   display: block;
 }
 
 .brand-copy strong {
+  color: var(--navy);
   font-size: 14px;
   letter-spacing: 0.08em;
-  color: var(--navy);
 }
 
-.brand-copy span {
-  font-size: 12px;
+.brand-copy span,
+.phone-block span {
   color: var(--muted);
+  font-size: 12px;
+}
+
+.phone-block strong {
+  color: var(--navy);
+  font-size: 24px;
+  line-height: 1.1;
 }
 
 .header-actions {
@@ -138,396 +163,402 @@ a { color: inherit; text-decoration: none; }
   gap: 12px;
 }
 
-.header-phone {
-  text-align: right;
-}
-
-.header-phone span {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.header-phone strong {
-  font-size: 23px;
-  line-height: 1.1;
-  color: var(--navy);
-}
-
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   min-height: 52px;
   padding: 0 22px;
   border-radius: 999px;
-  font-weight: 700;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  font-weight: 800;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 28px rgba(23, 38, 62, 0.14);
+  box-shadow: 0 16px 30px rgba(11, 44, 87, 0.16);
 }
 
 .button-primary {
   color: #fff;
-  background: linear-gradient(135deg, var(--rose), #91526a);
+  background: linear-gradient(135deg, var(--navy), var(--blue));
 }
 
 .button-line {
   color: #fff;
-  background: linear-gradient(135deg, #21b857, #119d47);
+  background: linear-gradient(135deg, #22b95a, #119447);
 }
 
 .button-ghost {
   color: var(--navy);
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(30, 53, 87, 0.08);
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(11, 44, 87, 0.08);
 }
 
 .hero {
-  padding: 42px 0 26px;
+  padding: 34px 0 22px;
+}
+
+.hero-board {
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  padding: 38px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(237,246,255,0.94));
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow: 0 34px 70px rgba(11, 44, 87, 0.14);
+}
+
+.hero-board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(73, 177, 255, 0.14), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(244, 179, 56, 0.1), transparent 22%);
+  pointer-events: none;
 }
 
 .hero-grid {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  gap: 26px;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 28px;
   align-items: center;
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   padding: 10px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(182, 107, 127, 0.16);
-  color: var(--rose);
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(11, 44, 87, 0.08);
+  color: var(--blue);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.04em;
 }
 
 .hero-copy h1 {
-  margin: 18px 0 18px;
+  margin: 18px 0 14px;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-size: clamp(36px, 5.4vw, 66px);
-  line-height: 1.18;
-  color: var(--navy-deep);
-  letter-spacing: 0.01em;
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 1.16;
+  color: var(--navy);
 }
 
 .hero-copy p {
   margin: 0;
-  max-width: 660px;
+  max-width: 620px;
+  color: var(--muted);
   font-size: clamp(16px, 2vw, 19px);
-  color: var(--muted);
 }
 
-.hero-points {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin: 28px 0;
-}
-
-.point-card {
-  padding: 18px 16px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72));
-  border: 1px solid rgba(30, 53, 87, 0.08);
-  box-shadow: var(--shadow);
-}
-
-.point-card strong {
-  display: block;
-  margin-bottom: 6px;
+.hero-copy strong {
   color: var(--navy);
-  font-size: 15px;
-}
-
-.point-card span {
-  display: block;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
+  margin: 28px 0 16px;
 }
 
 .hero-note {
-  margin-top: 18px;
   color: var(--muted);
   font-size: 13px;
 }
 
-.hero-visual {
-  position: relative;
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 26px;
 }
 
-.hero-visual .frame {
-  position: relative;
-  overflow: hidden;
-  border-radius: 36px;
-  background: rgba(255,255,255,0.72);
-  padding: 14px;
-  border: 1px solid rgba(255,255,255,0.85);
-  box-shadow: 0 32px 60px rgba(31, 44, 71, 0.18);
+.hero-stat,
+.card,
+.mini-card,
+.price-card,
+.flow-card,
+.faq-item,
+.cta-box,
+.quote-card,
+.compare-card,
+.support-card {
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  border: 1px solid rgba(11, 44, 87, 0.08);
+  box-shadow: var(--shadow);
 }
 
-.hero-visual .frame::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 48%, rgba(20,37,61,0.16) 100%);
-  z-index: 1;
-  pointer-events: none;
+.hero-stat {
+  padding: 18px 16px;
 }
 
-.hero-visual img {
-  width: 100%;
-  height: 610px;
-  object-fit: cover;
-  border-radius: 26px;
-}
-
-.floating-card {
-  position: absolute;
-  z-index: 2;
-  padding: 16px 18px;
-  border-radius: 22px;
-  background: rgba(255, 250, 246, 0.92);
-  border: 1px solid rgba(255,255,255,0.8);
-  box-shadow: 0 18px 34px rgba(23, 38, 62, 0.16);
-}
-
-.floating-card strong {
+.hero-stat strong,
+.section-label,
+.mini-card strong,
+.price-card strong,
+.flow-card strong,
+.support-card strong,
+.quote-card strong {
   display: block;
   color: var(--navy);
-  font-size: 24px;
-  line-height: 1;
 }
 
-.floating-card span {
+.hero-stat strong {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.hero-stat span,
+.section-lead,
+.card p,
+.mini-card span,
+.price-card span,
+.flow-card span,
+.support-card span,
+.quote-card span,
+.faq-item p,
+.cta-copy p {
+  color: var(--muted);
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hero-frame {
+  border-radius: 32px;
+  padding: 14px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.9);
+}
+
+.hero-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 24px;
+}
+
+.float-pill {
+  position: absolute;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(255,255,255,0.88);
+  box-shadow: 0 18px 34px rgba(11, 44, 87, 0.14);
+}
+
+.float-pill strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--navy);
+}
+
+.float-pill span {
   display: block;
   margin-top: 6px;
   font-size: 12px;
   color: var(--muted);
 }
 
-.floating-a { left: -10px; bottom: 44px; }
-.floating-b { right: -12px; top: 44px; }
+.pill-a { left: -10px; bottom: 28px; }
+.pill-b { right: -12px; top: 28px; }
+
+.strip {
+  padding: 10px 0 34px;
+}
+
+.strip-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.strip-card {
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(11,44,87,0.98), rgba(29,101,193,0.96));
+  color: #fff;
+  box-shadow: 0 18px 34px rgba(11, 44, 87, 0.16);
+}
+
+.strip-card strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.strip-card span {
+  color: rgba(255,255,255,0.84);
+  font-size: 13px;
+}
 
 .section {
-  padding: 42px 0;
+  padding: 44px 0;
+}
+
+.section-head {
+  max-width: 780px;
+  margin-bottom: 28px;
+}
+
+.section-label {
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .section-title {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-size: clamp(28px, 4vw, 44px);
-  line-height: 1.28;
-  color: var(--navy-deep);
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.26;
+  color: var(--navy);
 }
 
 .section-lead {
-  margin: 0 0 28px;
-  max-width: 760px;
-  color: var(--muted);
+  margin: 0;
   font-size: 16px;
 }
 
 .pain-grid,
-.solution-grid,
-.stats-grid,
+.result-grid,
+.feature-grid,
+.price-grid,
+.flow-grid,
 .support-grid,
-.voice-grid {
+.faq-grid {
   display: grid;
   gap: 18px;
 }
 
+.pain-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.pain-image {
+  overflow: hidden;
+  padding: 0;
+}
+
+.pain-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  object-fit: cover;
+}
+
 .pain-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.glass-card {
-  padding: 26px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.74));
-  border: 1px solid rgba(30, 53, 87, 0.08);
-  box-shadow: var(--shadow);
+.card {
+  padding: 24px;
 }
 
-.icon-chip {
-  display: inline-flex;
-  width: 52px;
-  height: 52px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(244,221,228,0.85), rgba(246,231,201,0.85));
-  font-size: 24px;
-}
-
-.glass-card h3,
-.stat-card h3,
-.support-card h3,
-.voice-card h3 {
-  margin: 18px 0 10px;
+.card h3 {
+  margin: 16px 0 10px;
   color: var(--navy);
   font-size: 22px;
   line-height: 1.4;
 }
 
-.glass-card p,
-.support-card p,
-.voice-card p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 15px;
+.icon-chip {
+  display: inline-flex;
+  width: 54px;
+  height: 54px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(73,177,255,0.18), rgba(244,179,56,0.18));
+  font-size: 24px;
 }
 
-.solution-grid {
+.result-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.solution-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.solution-number {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  font-size: 48px;
-  line-height: 1;
-  color: rgba(30, 53, 87, 0.08);
-  font-family: Georgia, "Times New Roman", serif;
-}
-
-.stats-wrap {
-  display: grid;
-  grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
-  gap: 22px;
-  align-items: stretch;
-}
-
-.stats-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.stat-card {
-  padding: 28px 20px;
+.result-card {
+  padding: 28px 22px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(30,53,87,0.98), rgba(39,68,110,0.96));
+  background: linear-gradient(180deg, rgba(11,44,87,0.98), rgba(29,101,193,0.96));
   color: #fff;
-  box-shadow: 0 24px 42px rgba(20, 37, 61, 0.2);
+  box-shadow: 0 22px 44px rgba(11, 44, 87, 0.18);
 }
 
-.stat-card strong {
+.result-card strong {
   display: block;
-  font-size: clamp(38px, 5vw, 54px);
+  color: #ffe49a;
+  font-size: clamp(38px, 5vw, 58px);
   line-height: 1;
-  color: #fff0d0;
 }
 
-.stat-card span,
-.stat-card p {
-  display: block;
-  margin-top: 10px;
-  color: rgba(255,255,255,0.82);
+.result-card h3 {
+  margin: 12px 0 8px;
+  color: #fff;
+  font-size: 24px;
+}
+
+.result-card p {
+  margin: 0;
+  color: rgba(255,255,255,0.86);
   font-size: 14px;
 }
 
-.photo-panel {
-  overflow: hidden;
-  padding: 0;
+.feature-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.photo-panel img {
-  width: 100%;
-  height: 100%;
-  min-height: 360px;
-  object-fit: cover;
+.mini-card {
+  padding: 22px;
 }
 
-.partner-layout,
-.app-layout,
-.before-after {
+.mini-card strong {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.quote-wrap {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 24px;
-  align-items: center;
-}
-
-.list-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.list-item {
-  padding: 20px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(30, 53, 87, 0.08);
-}
-
-.list-item strong {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--navy);
-}
-
-.list-item span {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.before-after {
-  align-items: stretch;
+  gap: 22px;
 }
 
 .compare-card {
   padding: 28px;
-  border-radius: var(--radius-xl);
 }
 
 .compare-card h3 {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
+  color: var(--navy);
   font-size: 24px;
-}
-
-.before {
-  background: linear-gradient(180deg, #fff7f4, #fff1ee);
-  border: 1px solid rgba(182, 107, 127, 0.12);
-}
-
-.after {
-  background: linear-gradient(180deg, #f6fbff, #eef6ff);
-  border: 1px solid rgba(30, 53, 87, 0.1);
 }
 
 .compare-card ul {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .compare-card li {
   position: relative;
-  padding-left: 26px;
+  padding-left: 28px;
   margin-bottom: 12px;
-  color: var(--text);
 }
 
 .compare-card li::before {
@@ -536,36 +567,83 @@ a { color: inherit; text-decoration: none; }
   left: 0;
   top: 0;
   font-size: 20px;
-  color: var(--rose);
+  color: var(--blue);
 }
 
-.after li::before {
-  color: #286aa0;
+.before {
+  background: linear-gradient(180deg, #fff7f3, #fff2eb);
 }
 
-.app-phone-wrap {
-  display: flex;
+.after {
+  background: linear-gradient(180deg, #eef7ff, #e6f2ff);
+}
+
+.price-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.price-card {
+  padding: 24px;
+}
+
+.price-card strong {
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+.price-value {
+  display: block;
+  margin: 16px 0 6px;
+  color: #d94747;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.price-sub {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.flow-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.flow-card {
+  position: relative;
+  padding: 24px;
+}
+
+.flow-card::after {
+  content: "→";
+  position: absolute;
+  right: -14px;
+  top: calc(50% - 18px);
+  color: var(--cyan);
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.flow-card:last-child::after {
+  display: none;
+}
+
+.flow-step {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--blue), var(--navy));
+  color: #fff;
+  font-weight: 800;
 }
 
-.phone {
-  width: min(340px, 100%);
-  padding: 16px;
-  border-radius: 42px;
-  background: linear-gradient(180deg, #1c2740, #334865);
-  box-shadow: 0 28px 60px rgba(20, 37, 61, 0.24);
-}
-
-.phone-screen {
-  overflow: hidden;
-  border-radius: 30px;
-  background: #fff;
-  padding: 12px;
-}
-
-.phone-screen img {
-  width: 100%;
-  border-radius: 24px;
+.flow-card strong {
+  margin: 14px 0 8px;
+  font-size: 22px;
 }
 
 .support-grid {
@@ -574,69 +652,69 @@ a { color: inherit; text-decoration: none; }
 
 .support-card {
   padding: 24px;
-  border-radius: 24px;
-  background: rgba(255,255,255,0.82);
-  border: 1px solid rgba(30, 53, 87, 0.08);
-  box-shadow: var(--shadow);
 }
 
-.voice-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.support-card strong {
+  margin: 16px 0 8px;
+  font-size: 20px;
 }
 
-.voice-card {
-  padding: 24px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.76));
-  border: 1px solid rgba(30, 53, 87, 0.08);
-  box-shadow: var(--shadow);
+.faq-grid {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.voice-card strong {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: var(--rose);
+.faq-item {
+  overflow: hidden;
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 20px 24px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item p {
+  margin: 0;
+  padding: 0 24px 22px;
 }
 
 .cta {
-  padding: 28px 0 56px;
+  padding: 26px 0 58px;
 }
 
 .cta-box {
   position: relative;
   overflow: hidden;
   padding: 42px;
-  border-radius: 40px;
   background:
-    radial-gradient(circle at top right, rgba(244,221,228,0.26), transparent 22%),
-    linear-gradient(135deg, var(--navy-deep), var(--navy));
+    radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 24%),
+    linear-gradient(135deg, var(--navy-strong), var(--blue));
   color: #fff;
-  box-shadow: 0 32px 64px rgba(20, 37, 61, 0.24);
 }
 
-.cta-box::after {
-  content: "";
-  position: absolute;
-  width: 260px;
-  height: 260px;
-  right: -110px;
-  bottom: -120px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
+.cta-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 24px;
+  align-items: center;
 }
 
-.cta-box h2 {
+.cta-copy h2 {
   margin: 0 0 12px;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
   font-size: clamp(30px, 4vw, 48px);
   line-height: 1.3;
 }
 
-.cta-box p {
-  margin: 0 0 26px;
-  max-width: 720px;
-  color: rgba(255,255,255,0.82);
+.cta-copy p {
+  margin: 0 0 24px;
+  color: rgba(255,255,255,0.86);
 }
 
 .cta-actions {
@@ -658,11 +736,33 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 4px;
 }
 
+.quote-card {
+  padding: 24px;
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.16);
+}
+
+.quote-card strong {
+  margin-bottom: 12px;
+  color: #fff;
+  font-size: 22px;
+}
+
+.quote-card ol {
+  margin: 0;
+  padding-left: 20px;
+  color: rgba(255,255,255,0.9);
+}
+
+.quote-card li + li {
+  margin-top: 10px;
+}
+
 .site-footer {
   padding: 0 0 34px;
+  text-align: center;
   color: var(--muted);
   font-size: 13px;
-  text-align: center;
 }
 
 .footer-credit {
@@ -688,16 +788,17 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 1100px) {
   .hero-grid,
-  .stats-wrap,
-  .partner-layout,
-  .app-layout,
-  .before-after {
+  .pain-layout,
+  .quote-wrap,
+  .cta-grid {
     grid-template-columns: 1fr;
   }
 
-  .pain-grid,
+  .strip-grid,
+  .feature-grid,
+  .price-grid,
   .support-grid,
-  .voice-grid {
+  .flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -708,28 +809,29 @@ a { color: inherit; text-decoration: none; }
     flex-wrap: wrap;
   }
 
-  .header-phone {
-    text-align: left;
+  .phone-block {
+    width: 100%;
   }
 
-  .hero-points,
+  .hero-stats,
+  .strip-grid,
   .pain-grid,
-  .solution-grid,
-  .stats-grid,
-  .list-grid,
-  .support-grid,
-  .voice-grid {
+  .result-grid,
+  .feature-grid,
+  .price-grid,
+  .flow-grid,
+  .support-grid {
     grid-template-columns: 1fr;
   }
 
-  .hero-visual img {
-    height: 460px;
-  }
-
-  .floating-a,
-  .floating-b {
+  .pill-a,
+  .pill-b {
     position: static;
     margin-top: 14px;
+  }
+
+  .flow-card::after {
+    display: none;
   }
 
   .cta-box {
@@ -759,22 +861,31 @@ a { color: inherit; text-decoration: none; }
     width: 100%;
   }
 
+  .hero-board {
+    padding: 28px 18px;
+    border-radius: 28px;
+  }
+
   .hero-copy h1 {
     font-size: 34px;
   }
 
-  .glass-card,
+  .card,
+  .mini-card,
+  .price-card,
+  .flow-card,
   .compare-card,
   .support-card,
-  .voice-card,
+  .faq-item,
   .cta-box {
-    border-radius: 24px;
+    border-radius: 22px;
   }
 }
 </style>
 </head>
 <body>
-<div class="background-orb"></div>
+<div class="back-grid"></div>
+<div class="back-orb"></div>
 
 <header class="site-header">
   <div class="container header-inner">
@@ -782,11 +893,11 @@ a { color: inherit; text-decoration: none; }
       <img class="brand-logo" src="assets/nsl-soudansho-logo.png" alt="NSL相談所ロゴ">
       <div class="brand-copy">
         <strong>NSL相談所</strong>
-        <span>個人事業主・中小企業のためのAI経営サポート</span>
+        <span>一般企業の業務削減を支えるAI社員</span>
       </div>
     </a>
     <div class="header-actions">
-      <div class="header-phone">
+      <div class="phone-block">
         <span>ご相談はこちら</span>
         <strong>090-8100-1417</strong>
       </div>
@@ -797,166 +908,98 @@ a { color: inherit; text-decoration: none; }
 
 <main id="top">
   <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy reveal">
-        <div class="eyebrow">経営判断を軽くするAI活用</div>
-        <h1>数字も人材も、<br>ひとりで抱えない。<br>経営者の右腕になるAIへ。</h1>
-        <p>NSL相談所は、固定費の見直し、業務整理、社員教育、クレーム一次対応までを一緒に整える伴走型サービスです。AIを入れることが目的ではなく、現場が楽になり、判断が早くなり、売上につながる形まで落とし込みます。</p>
-        <div class="hero-points">
-          <div class="point-card">
-            <strong>経営の見える化</strong>
-            <span>やることを整理し、優先順位を明確にします。</span>
-          </div>
-          <div class="point-card">
-            <strong>社員教育の負担減</strong>
-            <span>毎回同じ説明をしなくていい仕組みに変えます。</span>
-          </div>
-          <div class="point-card">
-            <strong>相談先が1つになる</strong>
-            <span>経費・教育・業務改善をまとめて相談できます。</span>
-          </div>
-        </div>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#cta">無料相談を予約する</a>
-          <a class="button button-ghost" href="#app">アプリ画面を見る</a>
-        </div>
-        <div class="hero-note">電話相談・LINE相談・訪問サポートに対応しています。</div>
-      </div>
-
-      <div class="hero-visual reveal">
-        <div class="frame">
-          <img src="assets/01_executive_ai_transformation.png" alt="中小企業の経営会議でAI活用を進めるイメージ">
-        </div>
-        <div class="floating-card floating-a">
-          <strong>3分</strong>
-          <span>現場の悩みをすぐ整理</span>
-        </div>
-        <div class="floating-card floating-b">
-          <strong>1つに集約</strong>
-          <span>教育・相談・業務改善を一本化</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
     <div class="container">
-      <h2 class="section-title reveal">こんなお悩みがある会社ほど、<br>AIの入れ方で差が出ます。</h2>
-      <p class="section-lead reveal">個人事業主や中小企業は、数字管理、人材育成、日々の判断まで少人数で抱えがちです。だからこそ、難しい仕組みではなく、現場ですぐ使えて、安心して任せられる導線設計が必要です。</p>
-      <div class="pain-grid">
-        <article class="glass-card reveal">
-          <div class="icon-chip">💸</div>
-          <h3>固定費が重い</h3>
-          <p>通信費、ツール代、外注費が増え続けているのに、どこから見直せばいいか分からない。</p>
-        </article>
-        <article class="glass-card reveal">
-          <div class="icon-chip">🧩</div>
-          <h3>業務が散らかる</h3>
-          <p>LINE、紙、口頭、担当者任せが混在し、確認だけで時間が消えてしまう。</p>
-        </article>
-        <article class="glass-card reveal">
-          <div class="icon-chip">🎓</div>
-          <h3>育成に時間がかかる</h3>
-          <p>新人教育が属人化し、教える人によって内容がぶれて、定着率も上がらない。</p>
-        </article>
-        <article class="glass-card reveal">
-          <div class="icon-chip">🫶</div>
-          <h3>相談が集中する</h3>
-          <p>クレーム、労務不安、判断相談が社長に集まり、本来やるべき営業や戦略に時間を使えない。</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h2 class="section-title reveal">NSL相談所の3つの整え方</h2>
-      <p class="section-lead reveal">難しい仕組みを押し付けるのではなく、現場で回る順番に並べ替えて、利益につながる形に整えます。</p>
-      <div class="solution-grid">
-        <article class="glass-card solution-card reveal">
-          <div class="solution-number">01</div>
-          <div class="icon-chip">📉</div>
-          <h3>固定費を見直す</h3>
-          <p>通信・システム・運用コストを洗い出し、無駄な支出を止めて、利益が残る体質へ変えます。</p>
-        </article>
-        <article class="glass-card solution-card reveal">
-          <div class="solution-number">02</div>
-          <div class="icon-chip">🗂️</div>
-          <h3>業務を整理する</h3>
-          <p>相談、申込、確認、教育の流れを整え、誰が見ても同じ動きができる状態にします。</p>
-        </article>
-        <article class="glass-card solution-card reveal">
-          <div class="solution-number">03</div>
-          <div class="icon-chip">🤖</div>
-          <h3>AIを戦力化する</h3>
-          <p>質問対応、教育補助、社内案内をAIに任せて、社長と管理職の負担を軽くします。</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container stats-wrap">
-      <div class="reveal">
-        <h2 class="section-title">AI導入後の業務イメージ</h2>
-        <p class="section-lead">数字訴求は強いですが、大事なのは「時間が空いたあとに何へ使えるか」です。営業同行、社員面談、紹介づくりなど、本当に価値の高い仕事へ時間を戻せます。</p>
-        <div class="stats-grid">
-          <article class="stat-card">
-            <strong>80%</strong>
-            <h3>一次相談の整理</h3>
-            <p>同じ質問の繰り返し対応を減らし、必要な相談だけが上がる状態へ。</p>
-          </article>
-          <article class="stat-card">
-            <strong>70%</strong>
-            <h3>教育説明の手間</h3>
-            <p>新人や現場スタッフへの基本説明をAIが補助し、教える負担を圧縮。</p>
-          </article>
-          <article class="stat-card">
-            <strong>60%</strong>
-            <h3>確認業務の往復</h3>
-            <p>確認先を減らし、判断材料がそろった状態で管理職に届く導線づくり。</p>
-          </article>
+      <div class="hero-board reveal">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">人を増やさず、業務を減らす</div>
+            <h1>一般企業が<br>日々の対応に追われず、<br>本業に集中できる会社へ。</h1>
+            <p>NSL相談所は、<strong>業務整理・固定費削減・人材教育時間削減</strong>を目的に、企業様の流れに合わせてアプリを作る現場型のAI社員サービスです。問い合わせ対応、教育、確認、報告を整え、会社全体の動きを軽くします。</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#cta">無料相談を予約する</a>
+              <a class="button button-ghost" href="#flow">導入の流れを見る</a>
+            </div>
+            <div class="hero-note">LINE相談・電話相談・訪問サポートに対応しています。</div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <strong>問い合わせの前さばき</strong>
+                <span>よくある質問や社内確認をAIが先に受けます。</span>
+              </div>
+              <div class="hero-stat">
+                <strong>教育時間の削減</strong>
+                <span>毎回同じ説明をしなくていい状態へ変えます。</span>
+              </div>
+              <div class="hero-stat">
+                <strong>必要案件だけ共有</strong>
+                <span>人の判断が必要な内容だけ担当者へ届きます。</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-frame">
+              <img src="assets/hero-lp-manager.png" alt="職場の摩擦を減らすAI仮想マネージャーのイメージ">
+            </div>
+          </div>
         </div>
       </div>
-      <figure class="glass-card photo-panel reveal">
-        <img src="assets/03_backoffice_automation.png" alt="AIで業務整理が進むオフィスイメージ">
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="container">
+      <div class="strip-grid reveal">
+        <div class="strip-card">
+          <strong>問い合わせ負担を減らす</strong>
+          <span>返信や確認にかかる時間を軽くします。</span>
+        </div>
+        <div class="strip-card">
+          <strong>教育内容を揃える</strong>
+          <span>教える人によるバラつきを減らします。</span>
+        </div>
+        <div class="strip-card">
+          <strong>確認の往復を減らす</strong>
+          <span>必要な情報が先に揃った状態へ整えます。</span>
+        </div>
+        <div class="strip-card">
+          <strong>固定費のムダを見直す</strong>
+          <span>手作業や重複対応によるムダを減らします。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container pain-layout">
+      <figure class="card pain-image reveal">
+        <img src="assets/03_backoffice_automation.png" alt="見えない負担が積み重なる現場イメージ">
       </figure>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container partner-layout">
-      <figure class="glass-card photo-panel reveal">
-        <img src="assets/japanese-office-training.png" alt="チーム育成を支えるAIパートナーのイメージ">
-      </figure>
-      <div class="reveal">
-        <h2 class="section-title">AIパートナーは、<br>ただ答えるだけではありません。</h2>
-        <p class="section-lead">社長や管理職がいつも受けている相談を、AIが前さばきすることで、現場の安心感と判断スピードが上がります。</p>
-        <div class="list-grid">
-          <div class="list-item">
-            <strong>新人育成</strong>
-            <span>まず何を教えるか、どこまで教えたかを揃えます。</span>
-          </div>
-          <div class="list-item">
-            <strong>クレーム一次整理</strong>
-            <span>感情対応の前に、状況と論点を落ち着いて整理します。</span>
-          </div>
-          <div class="list-item">
-            <strong>社内Q&amp;A</strong>
-            <span>就業ルール、報告方法、日々の困りごとをすぐ確認できます。</span>
-          </div>
-          <div class="list-item">
-            <strong>管理職補助</strong>
-            <span>相談内容を見て、誰が対応すべきかを判断しやすくします。</span>
-          </div>
-          <div class="list-item">
-            <strong>言い換え支援</strong>
-            <span>強い言い方を避け、伝わる表現に整えてトラブルを減らします。</span>
-          </div>
-          <div class="list-item">
-            <strong>現場マニュアル化</strong>
-            <span>口頭ノウハウを残して、離職や引継ぎの不安を減らします。</span>
-          </div>
+      <div>
+        <div class="section-head reveal">
+          <div class="section-label">Pain</div>
+          <h2 class="section-title">業務が重くなる原因は、仕事量だけではありません。</h2>
+          <p class="section-lead">少人数の会社ほど、問い合わせ、教育、確認、クレーム初動が一部の人に集中しやすくなります。問題は人手不足だけでなく、仕事の流れが整理されていないことにもあります。</p>
+        </div>
+        <div class="pain-grid">
+          <article class="card reveal">
+            <div class="icon-chip">📩</div>
+            <h3>問い合わせ確認</h3>
+            <p>同じ質問が何度も届き、そのたびに担当者が対応している。</p>
+          </article>
+          <article class="card reveal">
+            <div class="icon-chip">🎓</div>
+            <h3>教育負担</h3>
+            <p>教える人ごとに説明が違い、何度も同じ話を繰り返している。</p>
+          </article>
+          <article class="card reveal">
+            <div class="icon-chip">🧾</div>
+            <h3>報告と確認</h3>
+            <p>LINE、紙、口頭、表計算が混ざり、確認だけで時間が消える。</p>
+          </article>
+          <article class="card reveal">
+            <div class="icon-chip">⚠️</div>
+            <h3>クレーム初動</h3>
+            <p>状況整理が遅れ、感情対応まで一部の人が抱え込んでしまう。</p>
+          </article>
         </div>
       </div>
     </div>
@@ -964,89 +1007,186 @@ a { color: inherit; text-decoration: none; }
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title reveal">ストレスを増やす指導から、<br>守りながら育てる仕組みへ。</h2>
-      <p class="section-lead reveal">ハラスメント対策は「厳しく言わない」だけでは不十分です。感情が上がる前にAIが間に入り、言葉選びと対応順を整えることが重要です。</p>
-      <div class="before-after">
+      <div class="section-head reveal">
+        <div class="section-label">Result</div>
+        <h2 class="section-title">AIを入れる目的は、会社全体の時間を戻すことです。</h2>
+        <p class="section-lead">数字だけ見せるのではなく、空いた時間を何に使えるかまで見せることが大事です。NSL相談所は、削減した時間を顧客対応、売上づくり、人材育成、現場改善へ戻します。</p>
+      </div>
+      <div class="result-grid">
+        <article class="result-card reveal">
+          <strong>80%</strong>
+          <h3>一次相談の整理</h3>
+          <p>同じ質問の繰り返しを減らし、必要な相談だけが担当者へ届く状態へ。</p>
+        </article>
+        <article class="result-card reveal">
+          <strong>70%</strong>
+          <h3>教育説明の手間</h3>
+          <p>新人への基本説明をAIが補助し、教える負担を圧縮。</p>
+        </article>
+        <article class="result-card reveal">
+          <strong>60%</strong>
+          <h3>確認往復の削減</h3>
+          <p>判断に必要な情報が先に揃い、確認だけの時間を短縮。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Feature</div>
+        <h2 class="section-title">NSL相談所でできること</h2>
+        <p class="section-lead">ただ答えるだけではなく、会社の仕事が減るように、現場で使う流れごと整えます。</p>
+      </div>
+      <div class="feature-grid">
+        <div class="mini-card reveal">
+          <strong>業務Q&amp;A</strong>
+          <span>社内のよくある質問をその場で確認できます。</span>
+        </div>
+        <div class="mini-card reveal">
+          <strong>教育補助</strong>
+          <span>新人へ毎回同じ説明をしなくていい状態へ変えます。</span>
+        </div>
+        <div class="mini-card reveal">
+          <strong>クレーム一次整理</strong>
+          <span>感情対応の前に、状況と論点を整理します。</span>
+        </div>
+        <div class="mini-card reveal">
+          <strong>報告整理</strong>
+          <span>誰が何を対応したかを見えやすくします。</span>
+        </div>
+        <div class="mini-card reveal">
+          <strong>コンプラ相談</strong>
+          <span>聞きにくい内容でもAI経由で整理できます。</span>
+        </div>
+        <div class="mini-card reveal">
+          <strong>担当者補助</strong>
+          <span>必要案件だけ共有する流れを作り、判断に集中しやすくします。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Before / After</div>
+        <h2 class="section-title">導入前と導入後の違い</h2>
+        <p class="section-lead">一部の人が全部対応する状態から、AIが前さばきし、人が判断する状態へ変えるのが目的です。</p>
+      </div>
+      <div class="quote-wrap">
         <article class="compare-card before reveal">
-          <h3>Before</h3>
+          <h3>導入前</h3>
           <ul>
-            <li>社員の相談が社長に集中してしまう</li>
-            <li>指導が感情的になり、受け取り方に差が出る</li>
-            <li>クレーム時の初動が遅れ、現場が混乱する</li>
-            <li>教えた内容が残らず、同じことを何度も説明する</li>
+            <li>相談、確認、教育、クレームが一部の人に集中する</li>
+            <li>回答や説明が人によってバラバラになる</li>
+            <li>同じことを何度も口頭で伝えている</li>
+            <li>記録が残らず、改善が感覚頼りになる</li>
           </ul>
         </article>
         <article class="compare-card after reveal">
-          <h3>After</h3>
+          <h3>導入後</h3>
           <ul>
-            <li>AIが一次整理し、必要な案件だけ管理職へ届く</li>
-            <li>伝え方を整えてから指導できるため関係が悪化しにくい</li>
-            <li>対応の型がそろい、現場判断が早くなる</li>
-            <li>相談履歴が残るため、教育と再発防止に使える</li>
+            <li>AIが一次整理し、判断が必要な案件だけ上がる</li>
+            <li>説明内容がそろい、教育負担が軽くなる</li>
+            <li>対応履歴が残り、引き継ぎと再発防止に使える</li>
+            <li>担当者は顧客対応、売上、人材、改善に集中しやすくなる</li>
           </ul>
         </article>
       </div>
     </div>
   </section>
 
-  <section class="section" id="app">
-    <div class="container app-layout">
-      <div class="reveal">
-        <h2 class="section-title">スマホで使えるから、<br>現場で止まりません。</h2>
-        <p class="section-lead">忙しい現場では、パソコンを開く前にスマホで確認できることが重要です。相談、確認、回答の流れをその場で回せるように設計します。</p>
-        <div class="list-grid">
-          <div class="list-item">
-            <strong>質問入力が簡単</strong>
-            <span>長文でなくても大丈夫。短い言葉でも意図を整理します。</span>
-          </div>
-          <div class="list-item">
-            <strong>必要項目だけ表示</strong>
-            <span>何を確認すればいいか迷わないよう、順番に表示します。</span>
-          </div>
-          <div class="list-item">
-            <strong>相談履歴が残る</strong>
-            <span>前回のやりとりを振り返り、同じミスを減らせます。</span>
-          </div>
-          <div class="list-item">
-            <strong>社内共有しやすい</strong>
-            <span>管理職や担当者へ、そのまま引き継ぎしやすい形です。</span>
-          </div>
-        </div>
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Pricing</div>
+        <h2 class="section-title">小さく始められる料金設計</h2>
+        <p class="section-lead">まずは負担が重い部分から始めて、現場に合えば広げていく進め方ができます。</p>
       </div>
-      <div class="app-phone-wrap reveal">
-        <div class="phone">
-          <div class="phone-screen">
-            <img src="assets/app-mobile-screenshot.png" alt="NSL相談所のAIアプリ画面">
-          </div>
-        </div>
+      <div class="price-grid">
+        <article class="price-card reveal">
+          <strong>LINE用AI社員</strong>
+          <span>よくある質問対応、社内案内、一次相談の整理をLINE中心で導入。</span>
+          <span class="price-value">3万円〜</span>
+          <span class="price-sub">税込 33,000円〜</span>
+        </article>
+        <article class="price-card reveal">
+          <strong>WEB＋LINE用AI社員</strong>
+          <span>問い合わせ対応、教育補助、案内、担当者への引き継ぎ整理まで対応。</span>
+          <span class="price-value">8万円〜</span>
+          <span class="price-sub">税込 88,000円〜</span>
+        </article>
+        <article class="price-card reveal">
+          <strong>保守・改善サポート</strong>
+          <span>運用確認、回答修正、改善提案まで継続対応。</span>
+          <span class="price-value">1万円〜 / 月</span>
+          <span class="price-sub">税込 11,000円〜 / 月</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="flow">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-label">Flow</div>
+        <h2 class="section-title">導入までの流れ</h2>
+        <p class="section-lead">難しい準備はいりません。現場の悩みを聞いて、重い業務から順に軽くしていきます。</p>
+      </div>
+      <div class="flow-grid">
+        <article class="flow-card reveal">
+          <div class="flow-step">1</div>
+          <strong>無料相談</strong>
+          <span>今いちばん重く感じている仕事を3つ聞かせていただきます。</span>
+        </article>
+        <article class="flow-card reveal">
+          <div class="flow-step">2</div>
+          <strong>業務整理</strong>
+          <span>どこにムダがあるか、どこを先に軽くすべきかを整理します。</span>
+        </article>
+        <article class="flow-card reveal">
+          <div class="flow-step">3</div>
+          <strong>初期導入</strong>
+          <span>LINEやWEBに合わせて、小さく始められる形で作ります。</span>
+        </article>
+        <article class="flow-card reveal">
+          <div class="flow-step">4</div>
+          <strong>運用改善</strong>
+          <span>現場の使い方を見ながら、教育や報告の流れまで整えます。</span>
+        </article>
       </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title reveal">導入後も、置いていきません。</h2>
-      <p class="section-lead reveal">導入して終わりではなく、現場で回るまで一緒に整えます。使われない仕組みは意味がないため、運用定着まで支援します。</p>
+      <div class="section-head reveal">
+        <div class="section-label">Support</div>
+        <h2 class="section-title">導入して終わりではなく、現場で回るまで伴走します。</h2>
+        <p class="section-lead">アプリを入れて終わりではありません。使われる流れに育てるところまで、NSL相談所が一緒に進めます。</p>
+      </div>
       <div class="support-grid">
         <article class="support-card reveal">
-          <div class="icon-chip">🏢</div>
-          <h3>訪問サポート</h3>
-          <p>必要に応じて現場へ伺い、実際の流れを見ながら整えます。</p>
+          <div class="icon-chip">📱</div>
+          <strong>LINE連携</strong>
+          <span>現場が普段使っているLINE感覚で動くため、導入のハードルが低いです。</span>
         </article>
         <article class="support-card reveal">
-          <div class="icon-chip">💻</div>
-          <h3>リモート対応</h3>
-          <p>すぐ確認したい時はオンラインで迅速にサポートします。</p>
+          <div class="icon-chip">🧭</div>
+          <strong>導線設計</strong>
+          <span>誰が何を見て、どこで判断するかまで整理して作ります。</span>
         </article>
         <article class="support-card reveal">
           <div class="icon-chip">📘</div>
-          <h3>マニュアル整備</h3>
-          <p>誰が見ても分かる手順書にして、教育コストを抑えます。</p>
+          <strong>教育整備</strong>
+          <span>口頭ノウハウを残し、教える負担を減らせる状態へ整えます。</span>
         </article>
         <article class="support-card reveal">
-          <div class="icon-chip">📈</div>
-          <h3>改善提案</h3>
-          <p>運用後も見直しを行い、より楽に、より売れる流れへ育てます。</p>
+          <div class="icon-chip">🤝</div>
+          <strong>人が伴走</strong>
+          <span>困った時に相談できるため、現場に放置感が残りません。</span>
         </article>
       </div>
     </div>
@@ -1054,24 +1194,28 @@ a { color: inherit; text-decoration: none; }
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title reveal">こんな会社に相性が良いです</h2>
-      <p class="section-lead reveal">特に、社員との距離が近く、相談が経営者に集まりやすい会社ほど効果が出やすい設計です。</p>
-      <div class="voice-grid">
-        <article class="voice-card reveal">
-          <strong>10名〜50名前後の会社</strong>
-          <h3>管理が社長に寄りやすい</h3>
-          <p>現場も見ながら経営もしているため、判断負担を軽くしたい会社に向いています。</p>
-        </article>
-        <article class="voice-card reveal">
-          <strong>育成に課題がある会社</strong>
-          <h3>教え方を揃えたい</h3>
-          <p>人によって教え方が違う、伝わり方が違うという悩みを減らしたい会社に有効です。</p>
-        </article>
-        <article class="voice-card reveal">
-          <strong>紹介・継続を増やしたい会社</strong>
-          <h3>現場の対応品質を上げたい</h3>
-          <p>クレームを減らし、安心感ある対応でリピートや紹介を増やしたい会社に合います。</p>
-        </article>
+      <div class="section-head reveal">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">よくあるご質問</h2>
+        <p class="section-lead">初めての会社でも進めやすいように、よく聞かれる内容をまとめました。</p>
+      </div>
+      <div class="faq-grid">
+        <details class="faq-item reveal" open>
+          <summary>AIに詳しくなくても導入できますか？</summary>
+          <p>大丈夫です。難しい設定を丸投げするのではなく、どの仕事を減らしたいかを一緒に整理してから進めます。</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>どんな会社に一番向いていますか？</summary>
+          <p>問い合わせ、教育、確認、クレーム初動が一部の人に集中している会社に特に向いています。</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>いきなり大きく始める必要はありますか？</summary>
+          <p>ありません。まずは一番重い業務から小さく始めて、使いながら広げる進め方ができます。</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>導入後の修正や相談もできますか？</summary>
+          <p>できます。運用確認、回答修正、改善提案まで継続して対応します。</p>
+        </details>
       </div>
     </div>
   </section>
@@ -1079,24 +1223,36 @@ a { color: inherit; text-decoration: none; }
   <section class="cta" id="cta">
     <div class="container">
       <div class="cta-box reveal">
-        <h2>まずは、今の悩みを<br>3つだけ聞かせてください。</h2>
-        <p>何をAI化するべきか分からない段階でも大丈夫です。固定費、教育、相談対応のどこが重いのかを整理し、御社に合う導入順をご提案します。</p>
-        <div class="cta-actions">
-          <a class="button button-line" href="https://lin.ee/9W1wXMP" target="_blank" rel="noopener noreferrer">LINEで無料相談する</a>
-          <a class="button button-ghost" href="tel:09081001417">電話で相談する</a>
-        </div>
-        <div class="contact-row">
-          <div>
-            <strong>電話番号</strong>
-            <span>090-8100-1417</span>
+        <div class="cta-grid">
+          <div class="cta-copy">
+            <h2>まずは、今いちばん重い仕事を<br>3つだけ教えてください。</h2>
+            <p>何をAI化するべきか分からない段階でも大丈夫です。問い合わせ対応、教育、確認、報告のどこが重いのかを整理し、御社に合う順番をご提案します。</p>
+            <div class="cta-actions">
+              <a class="button button-line" href="https://lin.ee/9W1wXMP" target="_blank" rel="noopener noreferrer">LINEで無料相談する</a>
+              <a class="button button-ghost" href="tel:09081001417">電話で相談する</a>
+            </div>
+            <div class="contact-row">
+              <div>
+                <strong>電話番号</strong>
+                <span>090-8100-1417</span>
+              </div>
+              <div>
+                <strong>メール</strong>
+                <span>asano@nextsaleslab.com</span>
+              </div>
+              <div>
+                <strong>対応方法</strong>
+                <span>訪問 / オンライン / LINE</span>
+              </div>
+            </div>
           </div>
-          <div>
-            <strong>メール</strong>
-            <span>asano@nextsaleslab.com</span>
-          </div>
-          <div>
-            <strong>対応方法</strong>
-            <span>訪問 / オンライン / LINE</span>
+          <div class="quote-card">
+            <strong>相談時に伝えてほしいこと</strong>
+            <ol>
+              <li>毎日繰り返している業務</li>
+              <li>教育で時間がかかっている場面</li>
+              <li>LINEや電話で止まりやすい対応</li>
+            </ol>
           </div>
         </div>
       </div>
@@ -1108,7 +1264,7 @@ a { color: inherit; text-decoration: none; }
   <div class="container footer-credit">
     <strong>NSL相談所　浅野隆史</strong>
     <div>制作協力　レインボークリエイト　鹿島千佳</div>
-    <div>© NSL相談所 / 次世代の営業・教育・業務改善を支えるAIパートナー</div>
+    <div>© NSL相談所 / 一般企業の業務削減を支えるAI社員</div>
   </div>
 </footer>
 

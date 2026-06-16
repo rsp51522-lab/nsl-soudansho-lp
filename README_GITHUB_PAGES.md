@@ -1,5 +1,21 @@
 # GitHub外部公開手順
 
+このフォルダには、すでに外部公開用の完成版LPを用意しています。
+
+使う場所
+
+- 完成版LP本体: `docs/index.html`
+- すぐ配れるZIP: `outputs/external-share/nsl-soudansho-lp.zip`
+- 単体確認用: `index.html`
+
+今回のLP内容
+
+- 一般企業向け
+- 業務整理
+- 固定費削減
+- 人材教育時間削減
+- LINE相談導線つき
+
 ## ① GitHubで新しい保管場所を作る
 
 1. GitHubにログインします
@@ -12,6 +28,11 @@
 ## ② このフォルダをGitHubへ送る
 
 この作業で使う公開用データは `docs` フォルダです。
+
+一番かんたんな方法は2つあります。
+
+- 方法A: `docs` フォルダごと送る
+- 方法B: `outputs/external-share/nsl-soudansho-lp.zip` を解凍して中身を送る
 
 送る前に確認するもの
 
@@ -37,11 +58,12 @@
 
 ## ⑤ このフォルダで準備済みのもの
 
-- Git管理の初期化
-- 公開用 `docs` フォルダ作成
+- 一般企業向けLP完成版の作成
+- `docs` フォルダの公開用調整
 - 必要画像のコピー
 - GitHub Pages用 `index.html` 調整
 - `.nojekyll` 作成
+- 外部共有用ZIP作成
 
 ## ⑥ うまくいかない時
 
@@ -53,3 +75,11 @@
 
 - URLが出ない  
   保存後、数分待ってから再読み込み
+
+## ⑦ すぐ確認したい時
+
+- このパソコンで見る時  
+  `docs/index.html` を開く
+
+- 他の人へファイルで渡す時  
+  `outputs/external-share/nsl-soudansho-lp.zip` を渡す

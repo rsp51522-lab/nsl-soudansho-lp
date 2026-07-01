@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b2f57">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="アシストくん">
+<title>アシストくん | 社員を守るAI相談アプリ</title>
+<style>
+:root {
+  --navy: #0b2f57;
+  --navy2: #123f70;
+  --blue: #eaf5ff;
+  --blue2: #cfe7ff;
+  --white: #ffffff;
+  --line: #d7e6f3;
+  --text: #18324a;
+  --muted: #64788b;
+  --green: #0f8f72;
+  --red: #c83a3a;
+  --shadow: 0 14px 34px rgba(11, 47, 87, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #f8fcff 0%, #edf6ff 100%);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; touch-action: manipulation; }
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 3px solid var(--navy);
+  box-shadow: 0 8px 22px rgba(11, 47, 87, 0.08);
+}
+.header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.logo {
+  width: 108px;
+  height: 58px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff url("nsl-soudansho-logo.png") center / contain no-repeat;
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  box-shadow: var(--shadow);
+  flex: 0 0 auto;
+}
+.logo img { display: none; }
+.title-block { flex: 1; min-width: 0; }
+.title-block h1 {
+  margin: 0;
+  font-size: clamp(22px, 4.8vw, 34px);
+  line-height: 1.2;
+  color: var(--navy);
+  letter-spacing: 0;
+}
+.title-block p { margin: 3px 0 0; color: var(--muted); font-size: 14px; }
+.demo-label {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #fff4d6;
+  border: 1px solid #f0c85a;
+  color: #7a5400;
+  font-size: 12px;
+  font-weight: 900;
+}
+.demo-notice {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #f0c85a;
+  background: #fffaf0;
+  color: #5d4300;
+  font-weight: 800;
+  font-size: 14px;
+}
+.status {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--blue);
+  border: 1px solid var(--blue2);
+  color: var(--navy);
+  font-weight: 800;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.wrap {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 18px 14px 42px;
+}
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.tab-btn {
+  min-height: 56px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 900;
+}
+.tab-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.screen { display: none; }
+.screen.active { display: block; }
+.panel {
+  background: rgba(255,255,255,0.96);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+.user-layout {
+  display: block;
+}
+.side { padding: 16px; }
+.guide {
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--blue);
+  border: 1px solid var(--blue2);
+  margin-bottom: 14px;
+}
+.guide strong { color: var(--navy); }
+.category-grid {
+  display: grid;
+  gap: 10px;
+}
+.category-btn {
+  min-height: 82px;
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text);
+  display: grid;
+  grid-template-columns: 42px 1fr 24px;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+}
+.category-btn.active, .category-btn:hover {
+  border-color: var(--navy);
+  background: #f5fbff;
+}
+.cat-icon { font-size: 30px; text-align: center; }
+.cat-name { font-size: 18px; font-weight: 900; color: var(--navy); line-height: 1.25; }
+.cat-help { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.arrow { font-size: 26px; color: var(--navy); text-align: right; }
+.chat {
+  min-height: 720px;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.chat-head {
+  padding: 16px;
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bot-face {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--white) url("nsl-soudansho-logo.png") center / 88% auto no-repeat;
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  box-shadow: 0 6px 18px rgba(11, 47, 87, 0.18);
+}
+.chat-head h2 { margin: 0; font-size: 22px; line-height: 1.2; }
+.chat-head p { margin: 3px 0 0; color: rgba(255,255,255,0.86); font-size: 14px; }
+.messages {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  background:
+    linear-gradient(rgba(11,47,87,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11,47,87,0.035) 1px, transparent 1px),
+    #fbfdff;
+  background-size: 34px 34px;
+}
+.msg {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+.msg.user { justify-content: flex-end; }
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: var(--white);
+  flex: 0 0 auto;
+  font-weight: 900;
+}
+.avatar.bot-logo {
+  background: var(--white) url("nsl-soudansho-logo.png") center / 86% auto no-repeat;
+  border: 2px solid var(--navy);
+  color: transparent;
+}
+.bubble {
+  max-width: min(82%, 640px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 16px;
+  white-space: pre-wrap;
+}
+.user .bubble { background: var(--blue); border-color: var(--blue2); }
+.choices {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 16px 46px;
+}
+.choice-btn {
+  min-height: 64px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 2px solid var(--blue2);
+  background: var(--white);
+  text-align: left;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--navy);
+}
+.choice-btn:hover { background: var(--blue); border-color: var(--navy); }
+.answer-card {
+  margin: 10px 0 16px 46px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--green);
+  border-radius: 8px;
+  padding: 14px;
+}
+.answer-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 20px; }
+.answer-card ul { margin: 8px 0 0; padding-left: 1.2em; }
+.chat-input {
+  padding: 12px;
+  border-top: 1px solid var(--line);
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 50px 1fr 58px;
+  gap: 8px;
+  align-items: end;
+}
+.icon-btn, .send-btn, .voice-btn {
+  border: 0;
+  border-radius: 8px;
+  min-height: 50px;
+  font-size: 22px;
+  font-weight: 900;
+}
+.icon-btn { background: var(--blue); color: var(--navy); border: 1px solid var(--blue2); }
+.icon-btn.on { background: #ffecec; color: var(--red); border-color: #ffc0c0; }
+.send-btn { background: var(--navy); color: var(--white); }
+.chat-input textarea {
+  min-height: 50px;
+  max-height: 140px;
+  resize: none;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 16px;
+}
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.tool-btn {
+  min-height: 46px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--navy);
+  font-weight: 900;
+  padding: 10px 14px;
+}
+.admin-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 14px;
+}
+.admin-side, .admin-main { padding: 16px; }
+.admin-list { display: grid; gap: 8px; }
+.admin-cat-btn {
+  min-height: 52px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--navy);
+  font-weight: 900;
+}
+.admin-cat-btn.active { background: var(--navy); color: var(--white); }
+.form-grid { display: grid; gap: 12px; }
+.field label {
+  display: block;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 5px;
+}
+.field input, .field textarea, .field select {
+  width: 100%;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--white);
+}
+.field textarea { min-height: 110px; resize: vertical; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.admin-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.primary, .danger, .plain {
+  min-height: 48px;
+  border-radius: 8px;
+  border: 0;
+  padding: 10px 16px;
+  font-weight: 900;
+}
+.primary { background: var(--navy); color: var(--white); }
+.danger { background: var(--red); color: var(--white); }
+.plain { background: var(--blue); color: var(--navy); border: 1px solid var(--blue2); }
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.doc-card {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 8px;
+}
+.doc-card h3 { margin: 0 0 6px; color: var(--navy); font-size: 18px; }
+.doc-card p { margin: 0; color: var(--muted); font-size: 14px; }
+.toast {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 40;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+  display: none;
+  font-weight: 900;
+}
+@media (max-width: 900px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .chat { min-height: 640px; }
+  .doc-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .app-header { position: sticky; }
+  .header-inner {
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+  }
+  .logo {
+    width: 82px;
+    height: 46px;
+    border-radius: 8px;
+    box-shadow: 0 8px 18px rgba(11, 47, 87, 0.10);
+  }
+  .title-block h1 {
+    font-size: 20px;
+    line-height: 1.18;
+  }
+  .title-block p {
+    font-size: 12px;
+    line-height: 1.45;
+    margin-top: 4px;
+  }
+  .status { display: none; }
+  .wrap {
+    padding: 8px 8px max(18px, env(safe-area-inset-bottom));
+  }
+  .tabs {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .tab-btn {
+    min-height: 52px;
+    font-size: 16px;
+    line-height: 1.25;
+    padding: 8px 6px;
+  }
+  .category-btn { min-height: 76px; }
+  .chat {
+    min-height: calc(100dvh - 178px);
+    border-radius: 8px;
+  }
+  .chat-head {
+    padding: 12px;
+    gap: 10px;
+  }
+  .bot-face {
+    width: 44px;
+    height: 44px;
+  }
+  .chat-head h2 {
+    font-size: 21px;
+  }
+  .chat-head p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .messages {
+    padding: 12px 10px;
+  }
+  .msg {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .avatar {
+    width: 34px;
+    height: 34px;
+  }
+  .bubble {
+    max-width: calc(100% - 46px);
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 11px 12px;
+  }
+  .choices, .answer-card { margin-left: 0; }
+  .choice-btn {
+    min-height: 58px;
+    font-size: 16px;
+    padding: 11px 12px;
+  }
+  .answer-card {
+    padding: 12px;
+  }
+  .answer-card h3 {
+    font-size: 18px;
+  }
+  .chat-input {
+    grid-template-columns: 46px 1fr 50px;
+    gap: 6px;
+    padding: 10px;
+  }
+  .icon-btn, .send-btn, .voice-btn {
+    min-height: 48px;
+    font-size: 20px;
+  }
+  .chat-input textarea {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 9px 10px;
+  }
+  .toolbar {
+    gap: 6px;
+  }
+  .tool-btn {
+    flex: 1 1 30%;
+    min-height: 42px;
+    padding: 8px 6px;
+    font-size: 14px;
+  }
+  .row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="logo" aria-label="NSL"><img src="data:image/png;base64,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" alt="NSL相談所"></div>
+    <div class="title-block">
+      <div class="demo-label">デモ版</div>
+      <h1>アシストくん 社員を守るAI相談</h1>
+      <p>外部説明用のデモ画面です。本番運用前のサンプルとして確認できます。</p>
+    </div>
+    <div class="status">デモ表示中</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="demo-notice">このページは、提案・説明用のデモ版です。実際の社員相談データは保存・送信されません。</div>
+  <div class="tabs" role="tablist" aria-label="画面切替">
+    <button class="tab-btn active" id="userTab" type="button" onclick="switchScreen('user')">社員が使う画面</button>
+    <button class="tab-btn" id="adminTab" type="button" onclick="switchScreen('admin')">管理者が直す画面</button>
+  </div>
+
+  <section class="screen active" id="userScreen">
+    <div class="user-layout">
+      <section class="panel chat" aria-label="AI相談チャット">
+        <div class="chat-head">
+          <div class="bot-face" aria-label="NSL相談所"></div>
+          <div>
+            <h2>アシストくん</h2>
+            <p id="chatSub">まず質問してください。内容から必要な項目だけ表示します。</p>
+          </div>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="chat-input">
+          <button class="icon-btn" id="micBtn" type="button" title="音声入力" onclick="toggleMic()">🎤</button>
+          <textarea id="freeInput" rows="1" placeholder="まず質問してください" oninput="autoGrow(this)" onkeydown="enterSend(event)"></textarea>
+          <button class="send-btn" type="button" onclick="sendFree()">▶</button>
+        </div>
+        <div class="toolbar" style="padding:0 12px 12px;margin-top:0;">
+          <button class="tool-btn" type="button" onclick="resetChat()">最初から</button>
+          <button class="tool-btn" type="button" onclick="speakLastAnswer()">回答を読む</button>
+          <button class="tool-btn" type="button" onclick="stopSpeak()">音声停止</button>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="screen" id="adminScreen">
+    <div class="admin-layout">
+      <aside class="panel admin-side">
+        <h2 style="margin:0 0 10px;color:var(--navy);">相談カテゴリ</h2>
+        <div class="admin-list" id="adminCategoryList"></div>
+        <div class="admin-actions">
+          <button class="primary" type="button" onclick="addCategory()">カテゴリ追加</button>
+          <button class="plain" type="button" onclick="restoreDefault()">初期データに戻す</button>
+        </div>
+      </aside>
+
+      <section class="panel admin-main">
+        <h2 style="margin:0 0 10px;color:var(--navy);">質問・回答の編集</h2>
+        <div class="form-grid">
+          <div class="row">
+            <div class="field">
+              <label for="catName">カテゴリ名</label>
+              <input id="catName" type="text">
+            </div>
+            <div class="field">
+              <label for="catIcon">アイコン</label>
+              <input id="catIcon" type="text">
+            </div>
+          </div>
+          <div class="field">
+            <label for="catHelp">カテゴリ説明</label>
+            <input id="catHelp" type="text">
+          </div>
+          <div class="field">
+            <label for="itemSelect">3つの選択肢</label>
+            <select id="itemSelect" onchange="loadItemForm()"></select>
+          </div>
+          <div class="field">
+            <label for="itemTitle">質問項目名</label>
+            <input id="itemTitle" type="text">
+          </div>
+          <div class="field">
+            <label for="itemAnswer">AI回答内容</label>
+            <textarea id="itemAnswer"></textarea>
+          </div>
+          <div class="field">
+            <label for="itemAction">次にやること</label>
+            <textarea id="itemAction"></textarea>
+          </div>
+        </div>
+        <div class="admin-actions">
+          <button class="primary" type="button" onclick="saveAdmin()">保存する</button>
+          <button class="plain" type="button" onclick="addItem()">選択肢を追加</button>
+          <button class="danger" type="button" onclick="deleteItem()">選択肢を削除</button>
+          <button class="danger" type="button" onclick="deleteCategory()">カテゴリを削除</button>
+        </div>
+        <p style="color:var(--muted);margin:14px 0 0;">注意：このデモ版は、このブラウザの中に保存します。会社全員で共有する本番版では、サーバー側の保存場所に変更します。</p>
+      </section>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORE_KEY = "assistkun_employee_protect_app_v1";
+let selectedCategoryId = "products";
+let selectedAdminCategoryId = "products";
+let selectedAdminItemId = "";
+let lastAnswerText = "";
+let recognition = null;
+let isRecording = false;
+
+const defaultData = {
+  categories: [
+    {
+      id: "products",
+      icon: "🛍️",
+      name: "商品・サービス",
+      help: "商品説明・料金・案内トーク",
+      items: [
+        {
+          id: "products-price",
+          title: "料金やプランを確認したい",
+          answer: "まず、お客様に案内する前に「料金」「工事費」「解約条件」の3点を確認してください。\n\n営業現場では、安さだけを先に言うと後で不信感につながります。最初に全体像を伝える方が安全です。",
+          action: "1. 最新の料金表を確認する\n2. お客様の利用状況を聞く\n3. 不明点はその場で断言せず、確認してから折り返す"
+        },
+        {
+          id: "products-feature",
+          title: "特徴を短く説明したい",
+          answer: "説明は長くしないことが大事です。\n\nおすすめの言い方：\n「このサービスは、毎月の通信費を見直しながら、使い勝手を落とさないための商品です。」\n\n50代以上のお客様には、専門用語より生活メリットで伝えてください。",
+          action: "1. 今の不満を聞く\n2. 月額・安心・サポートの順に説明する\n3. 最後に「ここまでで不明点ありますか」と確認する"
+        },
+        {
+          id: "products-talk",
+          title: "お客様への説明トークを作りたい",
+          answer: "最初の一言は、売り込みではなく確認から入ります。\n\n例：\n「今の通信費や使い方で、少し気になっている点はありますか？」\n\n相手が話した内容に合わせて、商品説明を短く出すと成約率が上がります。",
+          action: "1. 現状確認\n2. 悩みの確認\n3. 商品説明\n4. 不安解消\n5. 申込確認"
+        }
+      ]
+    },
+    {
+      id: "qa",
+      icon: "📋",
+      name: "業務Q&A",
+      help: "社内手順・顧客管理・日報",
+      items: [
+        {
+          id: "qa-contact",
+          title: "誰に確認すればよいか知りたい",
+          answer: "迷った時は、内容ごとに確認先を分けます。\n\n契約条件は管理者、顧客情報は事務、現場判断は直属上司です。\n\n大事なのは、全部を上司に投げず、内容を分けて聞くことです。",
+          action: "1. 何に困っているか一文で書く\n2. 契約・事務・現場のどれかに分ける\n3. 証拠になる画面や書類を添えて聞く"
+        },
+        {
+          id: "qa-customer",
+          title: "顧客管理の入力がわからない",
+          answer: "顧客管理は、後から見た人が状況を再現できることが目的です。\n\n最低限、日時・お客様の要望・次回対応・担当者を残してください。",
+          action: "1. 日時を書く\n2. お客様が言った言葉を書く\n3. 次に誰が何をするかを書く"
+        },
+        {
+          id: "qa-report",
+          title: "日報・報告の書き方を知りたい",
+          answer: "報告は長文より、事実と次の行動が大事です。\n\n型：\n「本日〇件訪問。〇件見込み。課題は〇〇。明日は〇〇を改善します。」",
+          action: "1. 数字を書く\n2. 良かった点を書く\n3. 課題を書く\n4. 明日の改善を書く"
+        }
+      ]
+    },
+    {
+      id: "ojt",
+      icon: "📚",
+      name: "OJT研修",
+      help: "新人教育・同行・基本動作",
+      items: [
+        {
+          id: "ojt-new",
+          title: "新人に何から教えるべきか",
+          answer: "新人には、商品知識より先に現場の基本動作を教えます。\n\n挨拶、時間厳守、報告、メモ、約束を守る。この5つができると、教育コストが下がります。",
+          action: "1. 朝の準備を見せる\n2. ロープレを10分行う\n3. 現場後に良かった点を1つ伝える"
+        },
+        {
+          id: "ojt-roleplay",
+          title: "ロープレの進め方を知りたい",
+          answer: "ロープレは長くやるより、短く毎日やる方が効きます。\n\n1回10分で十分です。入口トーク、ヒアリング、クロージングのどれか1つに絞って練習してください。",
+          action: "1. 今日のテーマを1つ決める\n2. 先輩がお客様役をする\n3. 良い点1つ、改善点1つだけ伝える"
+        },
+        {
+          id: "ojt-follow",
+          title: "部下への注意の仕方を知りたい",
+          answer: "注意は人格ではなく行動に絞ります。\n\n悪い例：「やる気あるの？」\n良い例：「報告が遅れると、お客様対応が遅れる。次から15時までに一度連絡して。」",
+          action: "1. 事実を伝える\n2. 影響を伝える\n3. 次の行動を具体的に決める"
+        }
+      ]
+    },
+    {
+      id: "docs",
+      icon: "📄",
+      name: "提出書類",
+      help: "申込書・報告書・不備対応",
+      items: [
+        {
+          id: "docs-needed",
+          title: "必要書類を確認したい",
+          answer: "書類不備は、現場の信用を落とします。\n\n提出前に、本人確認、申込内容、署名、日付、添付資料の5点を確認してください。",
+          action: "1. チェック表を見る\n2. 不足があればその場で確認\n3. 写真や控えを残す"
+        },
+        {
+          id: "docs-fill",
+          title: "記入方法を知りたい",
+          answer: "記入は、読める字・空欄なし・訂正ルールの3つが大切です。\n\n不明な欄を勝手に埋めるのは危険です。必ず確認してから記入してください。",
+          action: "1. 空欄を確認\n2. 不明点は担当部署へ確認\n3. 訂正は社内ルール通りに行う"
+        },
+        {
+          id: "docs-miss",
+          title: "提出ミスをしてしまった",
+          answer: "まず隠さず、早く報告してください。\n\nミス自体より、報告が遅れることの方が問題になります。状況、影響、今できる対応をセットで伝えます。",
+          action: "1. いつ気づいたかを書く\n2. 何が間違っていたかを書く\n3. 上司と事務へ同時に報告する"
+        }
+      ]
+    },
+    {
+      id: "claim",
+      icon: "🔥",
+      name: "クレーム対応",
+      help: "初動・謝罪・上司報告",
+      items: [
+        {
+          id: "claim-first",
+          title: "最初に何を言えばよいか",
+          answer: "最初は反論しません。\n\n第一声：\n「ご不快な思いをさせてしまい申し訳ございません。まず状況を正確に確認させてください。」\n\nこの一言で、火種を広げにくくなります。",
+          action: "1. 謝意を伝える\n2. 事実確認をする\n3. その場で約束しすぎない\n4. 上司へ報告する"
+        },
+        {
+          id: "claim-report",
+          title: "上司へどう報告すればよいか",
+          answer: "報告は感情ではなく、事実でまとめます。\n\n型：\n「誰が、いつ、何に怒っているか。こちらの対応履歴。今お客様が求めていること。」",
+          action: "1. お客様名\n2. 発生日時\n3. 怒っている理由\n4. 希望内容\n5. 次の連絡期限"
+        },
+        {
+          id: "claim-hard",
+          title: "強い口調で責められている",
+          answer: "社員を守ることが優先です。\n\n暴言、脅し、長時間拘束がある場合は、一人で対応を続けないでください。上司同席、電話折り返し、記録保存に切り替えます。",
+          action: "1. 会話を記録する\n2. 上司へすぐ共有する\n3. 一人で再訪問しない\n4. 必要なら会社窓口対応に切り替える"
+        }
+      ]
+    },
+    {
+      id: "comply",
+      icon: "⚠️",
+      name: "コンプラ相談",
+      help: "ルール違反・不正・社員保護",
+      items: [
+        {
+          id: "comply-gray",
+          title: "これはルール違反か迷っている",
+          answer: "迷った時点で、一度止めて確認するのが正解です。\n\n売上のために曖昧な説明をすると、後で大きな問題になります。事実と推測を分けて相談してください。",
+          action: "1. 何を見たかを書く\n2. 誰が関係しているかを書く\n3. 証拠を消さずに保管\n4. 管理者へ相談する"
+        },
+        {
+          id: "comply-pressure",
+          title: "無理な指示を受けて困っている",
+          answer: "社員を守るため、無理な指示は一人で抱えないでください。\n\n「誰から、いつ、何を指示されたか」を記録し、直属上司以外の相談先も使えるようにします。",
+          action: "1. 指示内容をメモする\n2. LINEやメールを保存する\n3. 社内相談窓口へ共有する"
+        },
+        {
+          id: "comply-private",
+          title: "匿名で相談したい",
+          answer: "匿名相談は、初期相談として有効です。\n\nただし、会社が正式に調査するには、日時・場所・内容などの事実情報が必要になります。個人名を出す前に、まず状況を整理しましょう。",
+          action: "1. 個人名を伏せて状況を書く\n2. 日時と場所を書く\n3. 証拠の有無を書く\n4. 相談窓口へ送る"
+        }
+      ]
+    }
+  ]
+};
+
+let appData = loadData();
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORE_KEY);
+    return saved ? JSON.parse(saved) : structuredClone(defaultData);
+  } catch (e) {
+    return JSON.parse(JSON.stringify(defaultData));
+  }
+}
+
+function saveData() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(appData));
+}
+
+function esc(text) {
+  return String(text || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function nl2br(text) {
+  return esc(text).replace(/\n/g, "<br>");
+}
+
+function switchScreen(name) {
+  document.getElementById("userScreen").classList.toggle("active", name === "user");
+  document.getElementById("adminScreen").classList.toggle("active", name === "admin");
+  document.getElementById("userTab").classList.toggle("active", name === "user");
+  document.getElementById("adminTab").classList.toggle("active", name === "admin");
+  if (name === "admin") renderAdmin();
+}
+
+function renderCategories() {
+  const grid = document.getElementById("categoryGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  appData.categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "category-btn" + (cat.id === selectedCategoryId ? " active" : "");
+    btn.innerHTML = `
+      <div class="cat-icon">${esc(cat.icon)}</div>
+      <div><div class="cat-name">${esc(cat.name)}</div><div class="cat-help">${esc(cat.help)}</div></div>
+      <div class="arrow">›</div>
+    `;
+    btn.onclick = () => selectCategory(cat.id);
+    grid.appendChild(btn);
+  });
+}
+
+function resetChat() {
+  document.getElementById("messages").innerHTML = "";
+  document.getElementById("chatSub").textContent = "まず質問してください。内容から必要な項目だけ表示します。";
+  addBot("こんにちは。アシストくんです。\n\nまず質問してください。\n\n例：\n・お客様から強く怒られた\n・提出書類で不備が出た\n・新人に何を教えればいいかわからない\n・これはコンプラ違反か迷っている\n\n質問内容から、必要な項目だけ表示します。");
+}
+
+function selectCategory(id) {
+  selectedCategoryId = id;
+  renderCategories();
+  const cat = getCat(id);
+  addUser(`${cat.icon} ${cat.name}`);
+  addBot(`${cat.name}ですね。\n近い内容を選んでください。`);
+  showItemChoices(cat);
+  document.getElementById("chatSub").textContent = `${cat.name}の相談中です。`;
+}
+
+function showCategoryChoices() {
+  const wrap = document.createElement("div");
+  wrap.className = "choices";
+  appData.categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice-btn";
+    btn.textContent = `${cat.icon} ${cat.name}`;
+    btn.onclick = () => selectCategory(cat.id);
+    wrap.appendChild(btn);
+  });
+  document.getElementById("messages").appendChild(wrap);
+  scrollBottom();
+}
+
+function showItemChoices(cat) {
+  const wrap = document.createElement("div");
+  wrap.className = "choices";
+  cat.items.slice(0, 3).forEach(item => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice-btn";
+    btn.textContent = item.title;
+    btn.onclick = () => showAnswer(cat, item);
+    wrap.appendChild(btn);
+  });
+  document.getElementById("messages").appendChild(wrap);
+  scrollBottom();
+}
+
+function showAnswer(cat, item) {
+  addUser(item.title);
+  const answer = `${cat.icon} ${item.title}\n\n${item.answer}\n\n次にやること：\n${item.action}`;
+  lastAnswerText = answer;
+  const card = document.createElement("div");
+  card.className = "answer-card";
+  card.innerHTML = `
+    <h3>${esc(cat.icon)} ${esc(item.title)}</h3>
+    <div>${nl2br(item.answer)}</div>
+    <h3 style="margin-top:14px;">次にやること</h3>
+    <div>${nl2br(item.action)}</div>
+    <div class="toolbar">
+      <button class="tool-btn" type="button" onclick="speakLastAnswer()">音声で聞く</button>
+      <button class="tool-btn" type="button" onclick="showItemChoices(getCat('${cat.id}'))">同じカテゴリで選び直す</button>
+    </div>
+  `;
+  document.getElementById("messages").appendChild(card);
+  speak(answer);
+  scrollBottom();
+}
+
+function addBot(text) {
+  addMessage("bot", text);
+  lastAnswerText = text;
+}
+
+function addUser(text) {
+  addMessage("user", text);
+}
+
+function addMessage(role, text) {
+  const row = document.createElement("div");
+  row.className = `msg ${role}`;
+  if (role === "bot") {
+    row.innerHTML = `<div class="avatar bot-logo" aria-label="NSL相談所"></div><div class="bubble">${nl2br(text)}</div>`;
+  } else {
+    row.innerHTML = `<div class="bubble">${nl2br(text)}</div><div class="avatar">社</div>`;
+  }
+  document.getElementById("messages").appendChild(row);
+  scrollBottom();
+}
+
+function sendFree() {
+  const input = document.getElementById("freeInput");
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  autoGrow(input);
+  addUser(text);
+  const cat = getBestCategory(text);
+  selectedCategoryId = cat.id;
+  renderCategories();
+  const reply = `質問内容から判断しました。\n\n近い相談は「${cat.name}」です。\n下の3つから、今の状況に一番近いものを選んでください。`;
+  addBot(reply);
+  showItemChoices(cat);
+  document.getElementById("chatSub").textContent = `${cat.name}の候補を表示しています。`;
+  speak(reply);
+}
+
+function getBestCategory(text) {
+  let cat = appData.categories.find(c => c.items.some(i => text.includes(i.title.slice(0, 4))));
+  if (!cat) {
+    if (/クレーム|怒|謝罪|お客様|客|強く|文句|苦情|炎上|責め/.test(text)) cat = getCat("claim");
+    else if (/書類|申込|不備|提出/.test(text)) cat = getCat("docs");
+    else if (/新人|教育|研修|部下|ロープレ|同行|教え/.test(text)) cat = getCat("ojt");
+    else if (/不正|違反|匿名|コンプラ|指示|ルール|ハラスメント|パワハラ|セクハラ|無理/.test(text)) cat = getCat("comply");
+    else if (/商品|料金|プラン|説明|サービス|トーク|案内|特徴/.test(text)) cat = getCat("products");
+    else cat = getCat("qa");
+  }
+  return cat;
+}
+
+function enterSend(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendFree();
+  }
+}
+
+function autoGrow(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 140) + "px";
+}
+
+function scrollBottom() {
+  const m = document.getElementById("messages");
+  m.scrollTop = m.scrollHeight;
+}
+
+function getCat(id) {
+  return appData.categories.find(c => c.id === id) || appData.categories[0];
+}
+
+function setupVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  recognition = new SR();
+  recognition.lang = "ja-JP";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.onresult = e => {
+    document.getElementById("freeInput").value = e.results[0][0].transcript;
+    autoGrow(document.getElementById("freeInput"));
+    stopMic();
+    setTimeout(sendFree, 250);
+  };
+  recognition.onerror = stopMic;
+  recognition.onend = stopMic;
+}
+
+function toggleMic() {
+  if (!recognition) {
+    showToast("音声入力はChromeで使える場合があります");
+    return;
+  }
+  isRecording ? stopMic() : startMic();
+}
+
+function startMic() {
+  isRecording = true;
+  document.getElementById("micBtn").classList.add("on");
+  document.getElementById("micBtn").textContent = "■";
+  recognition.start();
+}
+
+function stopMic() {
+  isRecording = false;
+  document.getElementById("micBtn").classList.remove("on");
+  document.getElementById("micBtn").textContent = "🎤";
+  try { recognition && recognition.stop(); } catch (e) {}
+}
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "ja-JP";
+  u.rate = 0.95;
+  u.pitch = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function speakLastAnswer() {
+  if (lastAnswerText) speak(lastAnswerText);
+}
+
+function stopSpeak() {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+
+function renderAdmin() {
+  const list = document.getElementById("adminCategoryList");
+  list.innerHTML = "";
+  appData.categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "admin-cat-btn" + (cat.id === selectedAdminCategoryId ? " active" : "");
+    btn.textContent = `${cat.icon} ${cat.name}`;
+    btn.onclick = () => {
+      selectedAdminCategoryId = cat.id;
+      selectedAdminItemId = "";
+      renderAdmin();
+    };
+    list.appendChild(btn);
+  });
+  loadCatForm();
+}
+
+function loadCatForm() {
+  const cat = getCat(selectedAdminCategoryId);
+  document.getElementById("catName").value = cat.name;
+  document.getElementById("catIcon").value = cat.icon;
+  document.getElementById("catHelp").value = cat.help;
+  const sel = document.getElementById("itemSelect");
+  sel.innerHTML = "";
+  cat.items.forEach(item => {
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    opt.textContent = item.title;
+    sel.appendChild(opt);
+  });
+  selectedAdminItemId = selectedAdminItemId || (cat.items[0] && cat.items[0].id) || "";
+  sel.value = selectedAdminItemId;
+  loadItemForm();
+}
+
+function loadItemForm() {
+  const cat = getCat(selectedAdminCategoryId);
+  selectedAdminItemId = document.getElementById("itemSelect").value;
+  const item = cat.items.find(i => i.id === selectedAdminItemId) || cat.items[0];
+  if (!item) {
+    document.getElementById("itemTitle").value = "";
+    document.getElementById("itemAnswer").value = "";
+    document.getElementById("itemAction").value = "";
+    return;
+  }
+  document.getElementById("itemTitle").value = item.title;
+  document.getElementById("itemAnswer").value = item.answer;
+  document.getElementById("itemAction").value = item.action;
+}
+
+function saveAdmin() {
+  const cat = getCat(selectedAdminCategoryId);
+  cat.name = document.getElementById("catName").value.trim() || "未設定カテゴリ";
+  cat.icon = document.getElementById("catIcon").value.trim() || "📌";
+  cat.help = document.getElementById("catHelp").value.trim() || "説明未設定";
+  const item = cat.items.find(i => i.id === selectedAdminItemId);
+  if (item) {
+    item.title = document.getElementById("itemTitle").value.trim() || "未設定の質問";
+    item.answer = document.getElementById("itemAnswer").value.trim() || "回答を入力してください。";
+    item.action = document.getElementById("itemAction").value.trim() || "次にやることを入力してください。";
+  }
+  saveData();
+  renderCategories();
+  renderAdmin();
+  showToast("保存しました");
+}
+
+function addCategory() {
+  const id = "cat-" + Date.now();
+  appData.categories.push({
+    id,
+    icon: "📌",
+    name: "新しいカテゴリ",
+    help: "説明を入力してください",
+    items: [
+      { id: id + "-1", title: "選択肢1", answer: "回答を入力してください。", action: "次にやることを入力してください。" },
+      { id: id + "-2", title: "選択肢2", answer: "回答を入力してください。", action: "次にやることを入力してください。" },
+      { id: id + "-3", title: "選択肢3", answer: "回答を入力してください。", action: "次にやることを入力してください。" }
+    ]
+  });
+  selectedAdminCategoryId = id;
+  saveData();
+  renderCategories();
+  renderAdmin();
+  showToast("カテゴリを追加しました");
+}
+
+function addItem() {
+  const cat = getCat(selectedAdminCategoryId);
+  const id = selectedAdminCategoryId + "-item-" + Date.now();
+  cat.items.push({ id, title: "新しい選択肢", answer: "回答を入力してください。", action: "次にやることを入力してください。" });
+  selectedAdminItemId = id;
+  saveData();
+  renderAdmin();
+  showToast("選択肢を追加しました");
+}
+
+function deleteItem() {
+  const cat = getCat(selectedAdminCategoryId);
+  if (cat.items.length <= 1) {
+    showToast("選択肢は最低1つ必要です");
+    return;
+  }
+  cat.items = cat.items.filter(i => i.id !== selectedAdminItemId);
+  selectedAdminItemId = "";
+  saveData();
+  renderAdmin();
+  showToast("選択肢を削除しました");
+}
+
+function deleteCategory() {
+  if (appData.categories.length <= 1) {
+    showToast("カテゴリは最低1つ必要です");
+    return;
+  }
+  appData.categories = appData.categories.filter(c => c.id !== selectedAdminCategoryId);
+  selectedAdminCategoryId = appData.categories[0].id;
+  selectedCategoryId = selectedAdminCategoryId;
+  saveData();
+  renderCategories();
+  renderAdmin();
+  resetChat();
+  showToast("カテゴリを削除しました");
+}
+
+function restoreDefault() {
+  appData = JSON.parse(JSON.stringify(defaultData));
+  selectedCategoryId = "products";
+  selectedAdminCategoryId = "products";
+  selectedAdminItemId = "";
+  saveData();
+  renderCategories();
+  renderAdmin();
+  resetChat();
+  showToast("初期データに戻しました");
+}
+
+function showToast(text) {
+  const t = document.getElementById("toast");
+  t.textContent = text;
+  t.style.display = "block";
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => t.style.display = "none", 2200);
+}
+
+setupVoice();
+renderCategories();
+resetChat();
+</script>
+</body>
+</html>

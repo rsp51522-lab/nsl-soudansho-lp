@@ -1,2 +1,203 @@
-<!doctype html>
-<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1d4ed8"><title>PK勤怠Bot</title><style>body{margin:0;font-family:"Hiragino Sans","Yu Gothic",sans-serif;background:linear-gradient(180deg,#fcfdff 0%,#f3f6fb 100%);color:#111827}.wrap{max-width:560px;margin:0 auto;padding:18px 14px 48px}.card{background:#fff;border:1px solid #d8dee9;border-radius:24px;padding:22px 18px;box-shadow:0 16px 40px rgba(17,24,39,.1)}.tag{display:inline-block;margin-bottom:10px;padding:6px 10px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:700}h1{margin:0 0 8px;font-size:26px}p{margin:0 0 16px;color:#6b7280;line-height:1.7}.meta,.status,.note{padding:14px 16px;border-radius:16px}.meta,.status{margin-bottom:14px;background:#f8fafc;border:1px solid #e5e7eb}.meta{font-weight:700}.status strong{color:#1d4ed8}.note{margin-top:16px;background:#fffbeb;border:1px solid #facc15;color:#92400e;line-height:1.7;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{width:100%;min-height:78px;padding:14px 10px;border-radius:18px;border:2px solid #9ca3af;background:#fff;color:#111827;font-size:20px;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 24px rgba(17,24,39,.06);transition:.2s;cursor:pointer}.btn.on,.btn:active{transform:translateY(2px)}.btn.done{background:#1d4ed8;color:#fff;border-color:#1d4ed8;box-shadow:0 0 0 4px rgba(29,78,216,.18)}iframe{width:0;height:0;border:0;position:absolute}</style></head><body><div class="wrap"><div class="card"><div class="tag">LINE WORKS用</div><h1>PK勤怠Bot</h1><p>名前入力は不要です。押したボタンだけで記録します。</p><div class="meta">送信者：PK asano</div><div class="status" id="status"><strong>準備完了</strong><br>下のボタンを押してください。</div><div class="grid"><button class="btn action" data-a="出勤" type="button">出勤</button><button class="btn action" data-a="退勤" type="button">退勤</button><button class="btn action" data-a="有給" type="button">有給</button><a class="btn menu" href="https://receipt-manager-line-ino.vercel.app/receipts?token=5464fc1fbb860eca1988ee95e81457ce8a3abe8410b5138759e0fe326dd0d633" target="_blank" rel="noopener">経費</a><a class="btn menu" href="https://docs.google.com/forms/d/e/1FAIpQLSeIRWHeCwt2ceYJOkXPrVxw49ay0FWE05zymPRCPGgBv7fu0g/viewform" target="_blank" rel="noopener">報告</a><a class="btn menu" href="https://docs.google.com/spreadsheets/d/1fynM9IjvJi22hKuX5SbUh-7f-bl0LcSILpemWQG8cRo/edit?usp=drivesdk" target="_blank" rel="noopener">確認</a></div><div class="note">記録後は「確認」を押すとスプレッドシートを見られます。</div></div></div><form id="f" action="https://script.google.com/macros/s/AKfycbx1Oi_bRiGRBytTXWloYXPtZ5RKChnD4MfLjQJMvho4kJRqtnrvSHiYbOdE8eKP4FYT/exec" method="get" target="save"><input type="hidden" name="mode" value="submit"><input type="hidden" name="action" id="a"></form><iframe name="save"></iframe><script>const s=document.getElementById('status'),a=document.getElementById('a'),f=document.getElementById('f'),actions=[...document.querySelectorAll('.action')],menus=[...document.querySelectorAll('.menu')];function clearAll(){actions.forEach(b=>b.classList.remove('on','done'));menus.forEach(b=>b.classList.remove('done'))}actions.forEach(b=>b.onclick=()=>{const v=b.dataset.a;clearAll();b.classList.add('on');s.innerHTML='<strong>送信中</strong><br>'+v+'を記録しています。';a.value=v;f.submit();setTimeout(()=>{b.classList.remove('on');b.classList.add('done');s.innerHTML='<strong>送信しました</strong><br>PK asano の「'+v+'」を記録しました。必要なら「確認」で見てください。';},600)});menus.forEach(b=>b.onclick=()=>{clearAll();b.classList.add('done');s.innerHTML='<strong>開きます</strong><br>'+b.textContent+'の画面を開いています。'});</script></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1d4ed8">
+<title>PK勤怠Bot</title>
+<style>
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --sub: #6b7280;
+  --line: #9ca3af;
+  --blue: #1d4ed8;
+  --shadow: 0 16px 40px rgba(17, 24, 39, 0.10);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(29, 78, 216, 0.10), transparent 34%),
+    linear-gradient(180deg, #fcfdff 0%, var(--bg) 100%);
+}
+.wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 18px 14px 48px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid #d8dee9;
+  border-radius: 24px;
+  padding: 22px 18px;
+  box-shadow: var(--shadow);
+}
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  line-height: 1.25;
+}
+p {
+  margin: 0 0 16px;
+  color: var(--sub);
+  line-height: 1.7;
+}
+.meta,
+.status {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+.meta {
+  font-weight: 700;
+}
+.status strong {
+  color: var(--blue);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+.grid > * {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.button {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-height: 78px;
+  padding: 14px 10px;
+  border-radius: 18px;
+  border: 2px solid var(--line);
+  background: #ffffff;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 24px rgba(17, 24, 39, 0.06);
+  cursor: pointer;
+}
+.button:active,
+.button.is-active {
+  transform: translateY(2px);
+}
+.button.is-done {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.18);
+}
+.note {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #fffbeb;
+  border: 1px solid #facc15;
+  color: #92400e;
+  line-height: 1.7;
+  font-size: 14px;
+}
+.hidden-frame {
+  width: 0;
+  height: 0;
+  border: 0;
+  position: absolute;
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow">LINE WORKS用</div>
+      <h1>PK勤怠Bot</h1>
+      <p>名前入力は不要です。押したボタンだけで記録します。</p>
+      <div class="meta">送信者：PK asano</div>
+      <div class="status" id="status"><strong>準備完了</strong><br>下のボタンを押してください。</div>
+
+      <div class="grid">
+        <button class="button action-button" type="button" data-action="出勤">出勤</button>
+        <button class="button action-button" type="button" data-action="退勤">退勤</button>
+        <button class="button action-button" type="button" data-action="有給">有給</button>
+        <a class="button menu-button" href="https://receipt-manager-line-ino.vercel.app/receipts?token=5464fc1fbb860eca1988ee95e81457ce8a3abe8410b5138759e0fe326dd0d633" target="_blank" rel="noopener">経費</a>
+        <a class="button menu-button" href="https://docs.google.com/forms/d/e/1FAIpQLSeIRWHeCwt2ceYJOkXPrVxw49ay0FWE05zymPRCPGgBv7fu0g/viewform" target="_blank" rel="noopener">報告</a>
+        <a class="button menu-button" href="https://docs.google.com/spreadsheets/d/1fynM9IjvJi22hKuX5SbUh-7f-bl0LcSILpemWQG8cRo/edit?usp=drivesdk" target="_blank" rel="noopener">確認</a>
+      </div>
+
+      <div class="note">
+        反映まで数秒かかる時があります。<br>
+        記録後は「確認」を押すとスプレッドシートを見られます。
+      </div>
+    </div>
+  </div>
+
+  <form id="submitForm" action="https://script.google.com/macros/s/AKfycbx1Oi_bRiGRBytTXWloYXPtZ5RKChnD4MfLjQJMvho4kJRqtnrvSHiYbOdE8eKP4FYT/exec" method="get" target="saveFrame">
+    <input type="hidden" name="mode" value="submit">
+    <input type="hidden" name="action" id="actionField" value="">
+  </form>
+  <iframe class="hidden-frame" name="saveFrame" title="saveFrame"></iframe>
+
+  <script>
+    const statusBox = document.getElementById('status');
+    const actionField = document.getElementById('actionField');
+    const submitForm = document.getElementById('submitForm');
+    const actionButtons = Array.from(document.querySelectorAll('.action-button'));
+    const menuButtons = Array.from(document.querySelectorAll('.menu-button'));
+
+    function clearStates() {
+      actionButtons.forEach((button) => button.classList.remove('is-active', 'is-done'));
+      menuButtons.forEach((button) => button.classList.remove('is-done'));
+    }
+
+    actionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const action = button.dataset.action;
+        clearStates();
+        button.classList.add('is-active');
+        statusBox.innerHTML = '<strong>送信中</strong><br>' + action + 'を記録しています。';
+        actionField.value = action;
+        submitForm.submit();
+        window.setTimeout(() => {
+          button.classList.remove('is-active');
+          button.classList.add('is-done');
+          statusBox.innerHTML = '<strong>送信しました</strong><br>PK asano の「' + action + '」を記録しました。必要なら「確認」で見てください。';
+        }, 600);
+      });
+    });
+
+    menuButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        clearStates();
+        button.classList.add('is-done');
+        statusBox.innerHTML = '<strong>開きます</strong><br>' + button.textContent + 'の画面を開いています。';
+      });
+    });
+  </script>
+</body>
+</html>

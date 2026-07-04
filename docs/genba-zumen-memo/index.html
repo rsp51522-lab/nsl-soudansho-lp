@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>現場図面メモ</title>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <style>
+      :root {
+        color: #0f172a;
+        background: #eaf4ff;
+        font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at top, rgba(56, 189, 248, 0.22), transparent 28%),
+          linear-gradient(180deg, #eaf4ff 0%, #f8fbff 50%, #eef7ff 100%);
+        color: #0f172a;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      .panel {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      }
+
+      .hero {
+        overflow: hidden;
+      }
+
+      .hero-head {
+        padding: 20px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #0f4c81 0%, #0369a1 50%, #0891b2 100%);
+      }
+
+      .hero-head p {
+        margin: 0;
+      }
+
+      .badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: #dbeafe;
+      }
+
+      h1 {
+        margin: 8px 0 10px;
+        font-size: 30px;
+        line-height: 1.2;
+      }
+
+      .lead {
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .hero-body {
+        padding: 16px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .section-title {
+        margin: 0 0 6px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .section-note {
+        margin: 0;
+        color: #475569;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .card {
+        padding: 16px;
+        border: 1px solid #dbe3ef;
+        background: #f8fbff;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field label,
+      .field .label {
+        font-size: 14px;
+        font-weight: 700;
+        color: #334155;
+      }
+
+      .input,
+      .textarea {
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        padding: 12px 14px;
+        font-size: 16px;
+        outline: none;
+      }
+
+      .input:focus,
+      .textarea:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+      }
+
+      .textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      .memo-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .chip {
+        min-height: 48px;
+        border: 1px solid #bae6fd;
+        background: #ffffff;
+        color: #075985;
+        font-weight: 700;
+        padding: 8px 10px;
+      }
+
+      .main-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .board-wrap {
+        display: grid;
+        gap: 12px;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .action-btn {
+        min-height: 58px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        padding: 10px 12px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      .action-btn.primary {
+        background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+        color: #ffffff;
+        border: none;
+      }
+
+      .action-btn.active {
+        background: #075985;
+        color: #ffffff;
+        border-color: #075985;
+      }
+
+      .action-btn.warn {
+        background: #fff1f2;
+        border-color: #fecdd3;
+        color: #be123c;
+      }
+
+      .board {
+        position: relative;
+        overflow: hidden;
+        min-height: 360px;
+        border: 2px dashed #94a3b8;
+        background: #f8fafc;
+        touch-action: auto;
+      }
+
+      .board.drawing {
+        touch-action: none;
+      }
+
+      .board img {
+        display: block;
+        width: 100%;
+        max-height: 72svh;
+        min-height: 360px;
+        object-fit: contain;
+        background: #e2e8f0;
+      }
+
+      .board-empty {
+        min-height: 360px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 20px;
+        color: #475569;
+      }
+
+      .annotation-text {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        border: 2px solid #0369a1;
+        background: rgba(255, 255, 255, 0.96);
+        color: #0f172a;
+        padding: 8px 10px;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        max-width: 48%;
+        cursor: grab;
+        user-select: none;
+      }
+
+      .annotation-text.selected,
+      .shape-hit.selected {
+        border-color: #f59e0b;
+      }
+
+      .svg-layer,
+      .hit-layer {
+        position: absolute;
+        inset: 0;
+      }
+
+      .shape-hit {
+        position: absolute;
+        background: transparent;
+        border: 2px solid transparent;
+        cursor: grab;
+      }
+
+      .board-note {
+        padding: 12px 14px;
+        background: #f8fafc;
+        color: #475569;
+        font-size: 14px;
+        line-height: 1.7;
+        border: 1px solid #dbe3ef;
+      }
+
+      .preview-frame {
+        overflow-x: auto;
+        padding: 12px;
+        background: #e2e8f0;
+      }
+
+      .sheet {
+        width: 794px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 22px;
+      }
+
+      .sheet-head {
+        border-bottom: 4px solid #0369a1;
+        padding-bottom: 14px;
+      }
+
+      .sheet-kicker {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: #0369a1;
+      }
+
+      .sheet-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      .sheet-title {
+        margin: 0;
+        font-size: 30px;
+      }
+
+      .sheet-date {
+        padding: 10px 12px;
+        background: #f0f9ff;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .sheet-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .sheet-box {
+        border: 1px solid #dbe3ef;
+        background: #f8fafc;
+        padding: 10px 12px;
+      }
+
+      .sheet-box.full {
+        grid-column: 1 / -1;
+      }
+
+      .sheet-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        color: #64748b;
+      }
+
+      .sheet-value {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        white-space: pre-wrap;
+        min-height: 22px;
+      }
+
+      .sheet-photo {
+        margin-top: 14px;
+        border: 1px solid #dbe3ef;
+        background: #f8fafc;
+        overflow: hidden;
+      }
+
+      .sheet-photo-inner {
+        position: relative;
+      }
+
+      .sheet-photo img {
+        display: block;
+        width: 100%;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (min-width: 900px) {
+        .hero-body {
+          grid-template-columns: 1.05fr 0.95fr;
+        }
+
+        .main-grid {
+          grid-template-columns: 1.2fr 0.8fr;
+          align-items: start;
+        }
+
+        .form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .span-2 {
+          grid-column: 1 / -1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel hero">
+        <div class="hero-head">
+          <p class="badge">GENBA MEMO APP</p>
+          <h1>現場図面メモ</h1>
+          <p class="lead">現場写真に寸法・矢印・メモを入れて、かんたんに指示書PDFを作成できます。</p>
+        </div>
+
+        <div class="hero-body">
+          <section class="card">
+            <h2 class="section-title">1. 現場情報入力</h2>
+            <p class="section-note">現場名、住所、作業期間、責任者などを入れると、そのまま指示書に反映されます。</p>
+            <div class="form-grid" id="form-grid">
+              <div class="field">
+                <span class="label">現場名</span>
+                <input class="input" name="siteName" placeholder="例：浅野様邸 浴室改修" />
+              </div>
+              <div class="field">
+                <span class="label">住所</span>
+                <input class="input" name="address" placeholder="例：東京都○○区○○ 1-2-3" />
+              </div>
+              <div class="field">
+                <span class="label">作業期間 開始</span>
+                <input class="input" type="date" name="workPeriodStart" />
+              </div>
+              <div class="field">
+                <span class="label">作業期間 終了</span>
+                <input class="input" type="date" name="workPeriodEnd" />
+              </div>
+              <div class="field">
+                <span class="label">責任者</span>
+                <input class="input" name="supervisorName" placeholder="例：浅野 隆史" />
+              </div>
+              <div class="field">
+                <span class="label">作業員</span>
+                <input class="input" name="workers" placeholder="例：山田・佐藤・鈴木" />
+              </div>
+              <div class="field">
+                <span class="label">作業日</span>
+                <input class="input" type="date" name="workDate" />
+              </div>
+              <div class="field">
+                <span class="label">作業予定</span>
+                <input class="input" name="workPlan" placeholder="例：浴室壁の補修と配管確認" />
+              </div>
+              <div class="field span-2">
+                <span class="label">作業内容</span>
+                <textarea class="textarea" name="workDetails" placeholder="例：既存利用あり。午後から入室可能。補修範囲は写真参照。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="section-title">2. 入れる文字</h2>
+            <p class="section-note">文字を入れたい時は、先に下へ文字を書いてから「文字入力」を押してください。</p>
+            <div class="memo-list" id="preset-list"></div>
+            <div class="field">
+              <span class="label">入力する文字</span>
+              <textarea class="textarea" id="draftMemo" placeholder="例：ここ補修&#10;幅 900mm&#10;既存利用"></textarea>
+            </div>
+            <div class="board-note">
+              使い方：1. 写真を追加 2. 文字入力または矢印・丸印・四角を選ぶ 3. 写真を押すか指でなぞる 4. 必要なら印を押したまま移動 5. PDF作成
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="main-grid" style="margin-top: 16px;">
+        <section class="panel card board-wrap">
+          <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center;">
+            <div>
+              <h2 class="section-title" style="margin-bottom: 4px;">3. 写真メモエリア</h2>
+              <p class="section-note">矢印・丸印・四角は、写真の上を指でなぞると入ります。</p>
+            </div>
+            <button class="action-btn primary" id="pickImageButton" type="button">写真を追加</button>
+          </div>
+
+          <input class="hidden" id="imageInput" type="file" accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic,image/heif" />
+
+          <div class="board" id="board">
+            <div class="board-empty" id="boardEmpty">
+              <strong>まずは写真を1枚選んでください</strong>
+              <div>JPG・PNG・HEICに対応しています。</div>
+            </div>
+            <img id="boardImage" class="hidden" alt="現場写真" />
+            <svg class="svg-layer hidden" id="svgLayer"></svg>
+            <div class="hit-layer hidden" id="hitLayer"></div>
+          </div>
+
+          <div class="board-note" id="modeGuide">通常表示中。使いたいボタンを押してから写真を操作してください。</div>
+        </section>
+
+        <section class="panel card">
+          <h2 class="section-title">4. 操作ボタン</h2>
+          <p class="section-note">スマホで押しやすい大きさにしています。</p>
+          <div class="toolbar">
+            <button class="action-btn" data-tool="text" type="button">文字入力</button>
+            <button class="action-btn" data-tool="arrow" type="button">矢印</button>
+            <button class="action-btn" data-tool="circle" type="button">丸印</button>
+            <button class="action-btn" data-tool="rect" type="button">四角</button>
+            <button class="action-btn" id="undoButton" type="button">元に戻す</button>
+            <button class="action-btn warn" id="deleteButton" type="button">削除</button>
+          </div>
+          <button class="action-btn primary" id="pdfButton" style="width: 100%; margin-top: 12px;" type="button">PDF作成</button>
+          <button class="action-btn" id="clearButton" style="width: 100%; margin-top: 10px;" type="button">入力内容を初期化</button>
+        </section>
+      </section>
+
+      <section class="panel card" style="margin-top: 16px;">
+        <h2 class="section-title">5. PDFプレビュー</h2>
+        <p class="section-note">ここにA4縦の指示書イメージが表示されます。PDF作成ボタンでそのまま保存できます。</p>
+        <div class="preview-frame">
+          <div class="sheet" id="sheet">
+            <div class="sheet-head">
+              <div class="sheet-kicker">GENBA MEMO SHEET</div>
+              <div class="sheet-title-row">
+                <div>
+                  <h2 class="sheet-title">現場図面メモ</h2>
+                  <div style="font-size: 14px; color: #475569; margin-top: 4px;">現場写真と作業指示を1枚にまとめる簡易指示書</div>
+                </div>
+                <div class="sheet-date">
+                  <div>作成日</div>
+                  <div id="sheetToday" style="font-weight: 700; color: #0f172a;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sheet-grid">
+              <div class="sheet-box"><div class="sheet-label">現場名</div><div class="sheet-value" id="sheetSiteName"></div></div>
+              <div class="sheet-box"><div class="sheet-label">住所</div><div class="sheet-value" id="sheetAddress"></div></div>
+              <div class="sheet-box"><div class="sheet-label">作業期間</div><div class="sheet-value" id="sheetWorkPeriod"></div></div>
+              <div class="sheet-box"><div class="sheet-label">責任者</div><div class="sheet-value" id="sheetSupervisorName"></div></div>
+              <div class="sheet-box"><div class="sheet-label">作業員</div><div class="sheet-value" id="sheetWorkers"></div></div>
+              <div class="sheet-box"><div class="sheet-label">作業日</div><div class="sheet-value" id="sheetWorkDate"></div></div>
+              <div class="sheet-box full"><div class="sheet-label">作業予定</div><div class="sheet-value" id="sheetWorkPlan"></div></div>
+              <div class="sheet-box full"><div class="sheet-label">作業内容</div><div class="sheet-value" id="sheetWorkDetails"></div></div>
+            </div>
+
+            <div class="sheet-photo">
+              <div class="sheet-photo-inner" id="sheetPhotoInner">
+                <img id="sheetImage" class="hidden" alt="書き込み済み写真" />
+                <div id="sheetEmpty" style="padding: 90px 20px; text-align: center; color: #64748b;">ここに書き込み済み写真が表示されます</div>
+                <svg class="svg-layer hidden" id="sheetSvgLayer"></svg>
+                <div class="hit-layer hidden" id="sheetTextLayer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const storageKey = "genba-zumen-memo-public";
+      const presetMemoList = ["ここ補修", "要確認", "既存利用", "配管注意", "ここ解体", "ここ新設", "幅 900mm", "高さ 1800mm"];
+      const state = {
+        formData: {
+          siteName: "",
+          address: "",
+          workPeriodStart: "",
+          workPeriodEnd: "",
+          supervisorName: "",
+          workers: "",
+          workDate: "",
+          workPlan: "",
+          workDetails: ""
+        },
+        imageSrc: "",
+        annotations: [],
+        draftMemo: "",
+        tool: null,
+        selectedId: null,
+        draftShape: null,
+        dragState: null
+      };
+
+      const formNames = Object.keys(state.formData);
+      const formInputs = Object.fromEntries(formNames.map((name) => [name, document.querySelector(`[name="${name}"]`)]));
+      const draftMemo = document.getElementById("draftMemo");
+      const presetList = document.getElementById("preset-list");
+      const board = document.getElementById("board");
+      const boardImage = document.getElementById("boardImage");
+      const boardEmpty = document.getElementById("boardEmpty");
+      const svgLayer = document.getElementById("svgLayer");
+      const hitLayer = document.getElementById("hitLayer");
+      const modeGuide = document.getElementById("modeGuide");
+      const imageInput = document.getElementById("imageInput");
+      const pickImageButton = document.getElementById("pickImageButton");
+      const toolButtons = [...document.querySelectorAll("[data-tool]")];
+      const undoButton = document.getElementById("undoButton");
+      const deleteButton = document.getElementById("deleteButton");
+      const clearButton = document.getElementById("clearButton");
+      const pdfButton = document.getElementById("pdfButton");
+      const sheet = document.getElementById("sheet");
+      const sheetImage = document.getElementById("sheetImage");
+      const sheetEmpty = document.getElementById("sheetEmpty");
+      const sheetSvgLayer = document.getElementById("sheetSvgLayer");
+      const sheetTextLayer = document.getElementById("sheetTextLayer");
+
+      function uid() {
+        return `memo-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function saveState() {
+        localStorage.setItem(storageKey, JSON.stringify({
+          formData: state.formData,
+          imageSrc: state.imageSrc,
+          annotations: state.annotations,
+          draftMemo: state.draftMemo
+        }));
+      }
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+          if (!saved) return;
+          state.formData = { ...state.formData, ...saved.formData };
+          state.imageSrc = saved.imageSrc || "";
+          state.annotations = Array.isArray(saved.annotations) ? saved.annotations : [];
+          state.draftMemo = saved.draftMemo || "";
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function formatPeriod(start, end) {
+        if (start && end) return `${start} 〜 ${end}`;
+        if (start) return `${start} 〜`;
+        if (end) return `〜 ${end}`;
+        return "";
+      }
+
+      function getGuideText() {
+        if (state.tool === "text") {
+          return state.draftMemo.trim()
+            ? "文字入力モード中。写真を押すと文字が入ります。"
+            : "文字入力モード中。先に「入力する文字」へ文字を入れてください。";
+        }
+        if (state.tool === "arrow") return "矢印モード中。写真の上を指でなぞってください。";
+        if (state.tool === "circle") return "丸印モード中。写真の上を指でなぞってください。";
+        if (state.tool === "rect") return "四角モード中。写真の上を指でなぞってください。";
+        return "通常表示中。使いたいボタンを押してから写真を操作してください。";
+      }
+
+      function normalizedPoint(event) {
+        const rect = board.getBoundingClientRect();
+        return {
+          x: clamp((event.clientX - rect.left) / rect.width, 0, 1),
+          y: clamp((event.clientY - rect.top) / rect.height, 0, 1)
+        };
+      }
+
+      function rectFromShape(shape) {
+        return {
+          left: Math.min(shape.startX, shape.endX),
+          top: Math.min(shape.startY, shape.endY),
+          width: Math.max(Math.abs(shape.endX - shape.startX), 0.01),
+          height: Math.max(Math.abs(shape.endY - shape.startY), 0.01)
+        };
+      }
+
+      function drawSvg(targetSvg, list, selectedId) {
+        targetSvg.innerHTML = "";
+        list.filter((item) => item.kind !== "text").forEach((item) => {
+          const rect = rectFromShape(item);
+          const color = item.id === selectedId ? "#f59e0b" : "#0369a1";
+          if (item.kind === "rect") {
+            targetSvg.insertAdjacentHTML("beforeend", `<rect x="${rect.left * 100}%" y="${rect.top * 100}%" width="${rect.width * 100}%" height="${rect.height * 100}%" fill="rgba(14,165,233,0.06)" stroke="${color}" stroke-width="0.4%" />`);
+          }
+          if (item.kind === "circle") {
+            targetSvg.insertAdjacentHTML("beforeend", `<ellipse cx="${(rect.left + rect.width / 2) * 100}%" cy="${(rect.top + rect.height / 2) * 100}%" rx="${(rect.width / 2) * 100}%" ry="${(rect.height / 2) * 100}%" fill="rgba(14,165,233,0.06)" stroke="${color}" stroke-width="0.4%" />`);
+          }
+          if (item.kind === "arrow") {
+            const markerId = `arrow-${item.id}`;
+            targetSvg.insertAdjacentHTML("beforeend", `<defs><marker id="${markerId}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${color}"></path></marker></defs><line x1="${item.startX * 100}%" y1="${item.startY * 100}%" x2="${item.endX * 100}%" y2="${item.endY * 100}%" stroke="${color}" stroke-width="0.6%" marker-end="url(#${markerId})" />`);
+          }
+        });
+      }
+
+      function drawTextLayer(target, list, selectedId, clickable) {
+        target.innerHTML = "";
+        list.filter((item) => item.kind === "text").forEach((item) => {
+          const el = document.createElement("div");
+          el.className = `annotation-text${item.id === selectedId ? " selected" : ""}`;
+          el.style.left = `${item.x * 100}%`;
+          el.style.top = `${item.y * 100}%`;
+          el.textContent = item.text;
+          if (clickable) {
+            el.dataset.id = item.id;
+            el.addEventListener("pointerdown", handleAnnotationPointerDown);
+            el.addEventListener("click", () => {
+              state.selectedId = item.id;
+              render();
+            });
+          } else {
+            el.style.cursor = "default";
+          }
+          target.appendChild(el);
+        });
+      }
+
+      function drawHitLayer(target, list, selectedId) {
+        target.innerHTML = "";
+        list.filter((item) => item.kind !== "text").forEach((item) => {
+          const rect = rectFromShape(item);
+          const hit = document.createElement("div");
+          hit.className = `shape-hit${item.id === selectedId ? " selected" : ""}`;
+          hit.dataset.id = item.id;
+          hit.style.left = `${rect.left * 100}%`;
+          hit.style.top = `${rect.top * 100}%`;
+          hit.style.width = `${rect.width * 100}%`;
+          hit.style.height = `${rect.height * 100}%`;
+          hit.addEventListener("pointerdown", handleAnnotationPointerDown);
+          hit.addEventListener("click", () => {
+            state.selectedId = item.id;
+            render();
+          });
+          target.appendChild(hit);
+        });
+      }
+
+      function syncSheet() {
+        document.getElementById("sheetToday").textContent = new Date().toLocaleDateString("ja-JP");
+        document.getElementById("sheetSiteName").textContent = state.formData.siteName || "未入力";
+        document.getElementById("sheetAddress").textContent = state.formData.address || "未入力";
+        document.getElementById("sheetWorkPeriod").textContent = formatPeriod(state.formData.workPeriodStart, state.formData.workPeriodEnd) || "未入力";
+        document.getElementById("sheetSupervisorName").textContent = state.formData.supervisorName || "未入力";
+        document.getElementById("sheetWorkers").textContent = state.formData.workers || "未入力";
+        document.getElementById("sheetWorkDate").textContent = state.formData.workDate || "未入力";
+        document.getElementById("sheetWorkPlan").textContent = state.formData.workPlan || "未入力";
+        document.getElementById("sheetWorkDetails").textContent = state.formData.workDetails || "未入力";
+
+        if (state.imageSrc) {
+          sheetImage.src = state.imageSrc;
+          sheetImage.classList.remove("hidden");
+          sheetEmpty.classList.add("hidden");
+          sheetSvgLayer.classList.remove("hidden");
+          sheetTextLayer.classList.remove("hidden");
+        } else {
+          sheetImage.classList.add("hidden");
+          sheetEmpty.classList.remove("hidden");
+          sheetSvgLayer.classList.add("hidden");
+          sheetTextLayer.classList.add("hidden");
+        }
+        drawSvg(sheetSvgLayer, state.annotations, null);
+        drawTextLayer(sheetTextLayer, state.annotations, null, false);
+      }
+
+      function render() {
+        formNames.forEach((name) => {
+          formInputs[name].value = state.formData[name];
+        });
+        draftMemo.value = state.draftMemo;
+        board.classList.toggle("drawing", state.tool === "arrow" || state.tool === "circle" || state.tool === "rect");
+        modeGuide.textContent = getGuideText();
+
+        toolButtons.forEach((button) => {
+          button.classList.toggle("active", button.dataset.tool === state.tool);
+        });
+
+        if (state.imageSrc) {
+          boardImage.src = state.imageSrc;
+          boardImage.classList.remove("hidden");
+          boardEmpty.classList.add("hidden");
+          svgLayer.classList.remove("hidden");
+          hitLayer.classList.remove("hidden");
+        } else {
+          boardImage.classList.add("hidden");
+          boardEmpty.classList.remove("hidden");
+          svgLayer.classList.add("hidden");
+          hitLayer.classList.add("hidden");
+        }
+
+        const renderList = state.draftShape ? [...state.annotations, { ...state.draftShape, id: "draft-shape" }] : state.annotations;
+        drawSvg(svgLayer, renderList, state.selectedId || "draft-shape");
+        drawTextLayer(hitLayer, state.annotations, state.selectedId, true);
+        drawHitLayer(hitLayer, state.annotations, state.selectedId);
+        syncSheet();
+        saveState();
+      }
+
+      function addTextAt(point) {
+        const text = state.draftMemo.trim();
+        if (!text) {
+          window.alert("先に「入力する文字」へ内容を入れてください。");
+          return;
+        }
+        const item = { id: uid(), kind: "text", text, x: point.x, y: point.y };
+        state.annotations.push(item);
+        state.selectedId = item.id;
+        render();
+      }
+
+      function addShape(shape) {
+        const width = Math.abs(shape.endX - shape.startX);
+        const height = Math.abs(shape.endY - shape.startY);
+        if (width < 0.015 && height < 0.015) return;
+        const item = { ...shape, id: uid() };
+        delete item.pointerId;
+        state.annotations.push(item);
+        state.selectedId = item.id;
+        render();
+      }
+
+      function moveAnnotation(id, dx, dy) {
+        const item = state.annotations.find((entry) => entry.id === id);
+        if (!item) return;
+        if (item.kind === "text") {
+          item.x = clamp(item.x + dx, 0.02, 0.98);
+          item.y = clamp(item.y + dy, 0.02, 0.98);
+        } else {
+          item.startX = clamp(item.startX + dx, 0.01, 0.99);
+          item.startY = clamp(item.startY + dy, 0.01, 0.99);
+          item.endX = clamp(item.endX + dx, 0.01, 0.99);
+          item.endY = clamp(item.endY + dy, 0.01, 0.99);
+        }
+      }
+
+      async function loadImageFile(file) {
+        const lowerName = file.name.toLowerCase();
+        const isHeic = lowerName.endsWith(".heic") || lowerName.endsWith(".heif");
+        if (isHeic) {
+          const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
+          return await blobToDataUrl(converted);
+        }
+        return await blobToDataUrl(file);
+      }
+
+      function blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      async function exportPdf() {
+        if (!state.imageSrc) {
+          window.alert("先に写真を追加してください。");
+          return;
+        }
+        pdfButton.disabled = true;
+        pdfButton.textContent = "PDF作成中...";
+        try {
+          const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+          const pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+          const imageData = canvas.toDataURL("image/jpeg", 0.92);
+          const pageWidth = 210;
+          const pageHeight = 297;
+          const margin = 10;
+          const contentWidth = pageWidth - margin * 2;
+          const contentHeight = pageHeight - margin * 2;
+          const ratio = canvas.width / canvas.height;
+          let width = contentWidth;
+          let height = width / ratio;
+          if (height > contentHeight) {
+            height = contentHeight;
+            width = height * ratio;
+          }
+          pdf.addImage(imageData, "JPEG", (pageWidth - width) / 2, margin, width, height);
+          pdf.save(`${state.formData.siteName || "現場図面メモ"}.pdf`);
+        } catch (error) {
+          console.error(error);
+          window.alert("PDF作成に失敗しました。別の写真で再度お試しください。");
+        } finally {
+          pdfButton.disabled = false;
+          pdfButton.textContent = "PDF作成";
+        }
+      }
+
+      function handleAnnotationPointerDown(event) {
+        event.stopPropagation();
+        const id = event.currentTarget.dataset.id;
+        if (!id) return;
+        state.selectedId = id;
+        const point = normalizedPoint(event);
+        state.dragState = { id, pointerId: event.pointerId, lastX: point.x, lastY: point.y };
+        board.setPointerCapture(event.pointerId);
+        render();
+      }
+
+      board.addEventListener("click", (event) => {
+        if (!state.imageSrc || state.tool !== "text") return;
+        if (event.target.dataset.id) return;
+        addTextAt(normalizedPoint(event));
+      });
+
+      board.addEventListener("pointerdown", (event) => {
+        if (!state.imageSrc) return;
+        if (event.target.dataset.id) return;
+        if (!state.tool || state.tool === "text") {
+          state.selectedId = null;
+          render();
+          return;
+        }
+        const point = normalizedPoint(event);
+        state.draftShape = {
+          pointerId: event.pointerId,
+          kind: state.tool,
+          startX: point.x,
+          startY: point.y,
+          endX: point.x,
+          endY: point.y
+        };
+        state.selectedId = null;
+        board.setPointerCapture(event.pointerId);
+        render();
+      });
+
+      board.addEventListener("pointermove", (event) => {
+        const point = normalizedPoint(event);
+        if (state.dragState && state.dragState.pointerId === event.pointerId) {
+          moveAnnotation(state.dragState.id, point.x - state.dragState.lastX, point.y - state.dragState.lastY);
+          state.dragState.lastX = point.x;
+          state.dragState.lastY = point.y;
+          render();
+          return;
+        }
+        if (state.draftShape && state.draftShape.pointerId === event.pointerId) {
+          state.draftShape.endX = point.x;
+          state.draftShape.endY = point.y;
+          render();
+        }
+      });
+
+      function endPointer(event) {
+        if (state.dragState && state.dragState.pointerId === event.pointerId) {
+          state.dragState = null;
+        }
+        if (state.draftShape && state.draftShape.pointerId === event.pointerId) {
+          addShape(state.draftShape);
+          state.draftShape = null;
+          render();
+        }
+      }
+
+      board.addEventListener("pointerup", endPointer);
+      board.addEventListener("pointercancel", endPointer);
+
+      pickImageButton.addEventListener("click", () => imageInput.click());
+      imageInput.addEventListener("change", async (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        try {
+          state.imageSrc = await loadImageFile(file);
+          state.selectedId = null;
+          render();
+        } catch (error) {
+          console.error(error);
+          window.alert("写真の読み込みに失敗しました。JPGまたはPNGで再度お試しください。");
+        } finally {
+          event.target.value = "";
+        }
+      });
+
+      toolButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          state.tool = state.tool === button.dataset.tool ? null : button.dataset.tool;
+          render();
+        });
+      });
+
+      undoButton.addEventListener("click", () => {
+        state.annotations.pop();
+        state.selectedId = null;
+        render();
+      });
+
+      deleteButton.addEventListener("click", () => {
+        if (!state.selectedId) return;
+        state.annotations = state.annotations.filter((item) => item.id !== state.selectedId);
+        state.selectedId = null;
+        render();
+      });
+
+      clearButton.addEventListener("click", () => {
+        const ok = window.confirm("入力内容とメモを初期化します。よろしいですか？");
+        if (!ok) return;
+        state.formData = {
+          siteName: "",
+          address: "",
+          workPeriodStart: "",
+          workPeriodEnd: "",
+          supervisorName: "",
+          workers: "",
+          workDate: "",
+          workPlan: "",
+          workDetails: ""
+        };
+        state.imageSrc = "";
+        state.annotations = [];
+        state.draftMemo = "";
+        state.tool = null;
+        state.selectedId = null;
+        state.draftShape = null;
+        localStorage.removeItem(storageKey);
+        render();
+      });
+
+      pdfButton.addEventListener("click", exportPdf);
+
+      formNames.forEach((name) => {
+        formInputs[name].addEventListener("input", (event) => {
+          state.formData[name] = event.target.value;
+          render();
+        });
+      });
+
+      draftMemo.addEventListener("input", (event) => {
+        state.draftMemo = event.target.value;
+        render();
+      });
+
+      presetMemoList.forEach((text) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "chip";
+        button.textContent = text;
+        button.addEventListener("click", () => {
+          const current = state.draftMemo.trim();
+          state.draftMemo = current ? `${state.draftMemo}${state.draftMemo.endsWith("\n") ? "" : "\n"}${text}` : text;
+          state.tool = "text";
+          render();
+        });
+        presetList.appendChild(button);
+      });
+
+      loadState();
+      render();
+    </script>
+  </body>
+</html>

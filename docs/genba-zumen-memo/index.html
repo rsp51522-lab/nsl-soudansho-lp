@@ -161,6 +161,11 @@
         gap: 16px;
       }
 
+      .stack {
+        display: grid;
+        gap: 16px;
+      }
+
       .board-wrap {
         display: grid;
         gap: 12px;
@@ -277,6 +282,223 @@
         border: 1px solid #dbe3ef;
       }
 
+      .room-palette,
+      .fixture-palette,
+      .checklist-grid,
+      .photo-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .room-btn,
+      .fixture-btn {
+        min-height: 52px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f4c81;
+        font-weight: 700;
+        padding: 10px 12px;
+      }
+
+      .planner-board {
+        position: relative;
+        min-height: 480px;
+        border: 2px solid #94a3b8;
+        background:
+          linear-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.2) 1px, transparent 1px),
+          #f8fbff;
+        background-size: 24px 24px;
+        overflow: hidden;
+        touch-action: none;
+      }
+
+      .planner-empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #64748b;
+        font-weight: 700;
+        padding: 20px;
+        pointer-events: none;
+      }
+
+      .room-box {
+        position: absolute;
+        border: 3px solid #0369a1;
+        background: rgba(224, 242, 254, 0.88);
+        padding: 10px 12px 28px;
+        user-select: none;
+        cursor: grab;
+      }
+
+      .room-box.selected {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+      }
+
+      .room-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .room-size {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #334155;
+        line-height: 1.5;
+      }
+
+      .room-handle {
+        position: absolute;
+        right: 6px;
+        bottom: 6px;
+        width: 18px;
+        height: 18px;
+        background: #0369a1;
+        border: 2px solid #ffffff;
+        cursor: nwse-resize;
+      }
+
+      .fixture-item {
+        position: absolute;
+        min-width: 54px;
+        border: 2px solid #16a34a;
+        background: rgba(240, 253, 244, 0.95);
+        color: #166534;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+        padding: 6px 8px;
+        user-select: none;
+        cursor: grab;
+      }
+
+      .fixture-item.selected {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+      }
+
+      .planner-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .planner-side {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field-row {
+        display: grid;
+        gap: 10px;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid #dbe3ef;
+        background: #ffffff;
+        padding: 12px;
+      }
+
+      .check-item input {
+        width: 20px;
+        height: 20px;
+        accent-color: #0369a1;
+      }
+
+      .attached-photo {
+        border: 1px solid #dbe3ef;
+        background: #ffffff;
+        padding: 8px;
+      }
+
+      .attached-photo img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        background: #e2e8f0;
+      }
+
+      .attached-photo-label {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #475569;
+      }
+
+      .plan-preview {
+        position: relative;
+        min-height: 320px;
+        border: 1px solid #dbe3ef;
+        background:
+          linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+          #ffffff;
+        background-size: 22px 22px;
+        overflow: hidden;
+      }
+
+      .plan-preview .room-box,
+      .plan-preview .fixture-item {
+        cursor: default;
+      }
+
+      .sheet-subtitle {
+        margin: 18px 0 10px;
+        font-size: 18px;
+        color: #0f4c81;
+      }
+
+      .sheet-checklist {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .sheet-check {
+        border: 1px solid #dbe3ef;
+        background: #f8fafc;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .sheet-photo-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .sheet-photo-card {
+        border: 1px solid #dbe3ef;
+        background: #f8fafc;
+        padding: 8px;
+      }
+
+      .sheet-photo-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        background: #e2e8f0;
+      }
+
+      .sheet-photo-card div {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #475569;
+      }
+
       .preview-frame {
         overflow-x: auto;
         padding: 12px;
@@ -384,7 +606,16 @@
           align-items: start;
         }
 
+        .planner-grid {
+          grid-template-columns: 1.18fr 0.82fr;
+          align-items: start;
+        }
+
         .form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .field-row {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
@@ -504,7 +735,72 @@
       </section>
 
       <section class="panel card" style="margin-top: 16px;">
-        <h2 class="section-title">5. PDFプレビュー</h2>
+        <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div>
+            <h2 class="section-title" style="margin-bottom: 4px;">5. 間取りメモ</h2>
+            <p class="section-note">部屋を追加して動かし、設備を置いて、現場で使う簡易間取りを作れます。</p>
+          </div>
+          <button class="action-btn primary" id="addRoomPhotoButton" type="button">現場写真を添付</button>
+        </div>
+
+        <input class="hidden" id="roomPhotoInput" type="file" accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic,image/heif" multiple />
+
+        <div class="planner-grid" style="margin-top: 14px;">
+          <section class="stack">
+            <div class="planner-board" id="plannerBoard">
+              <div class="planner-empty" id="plannerEmpty">下の「部屋を追加」から始めてください</div>
+            </div>
+
+            <div class="board-note" id="plannerGuide">
+              使い方：1. 部屋を追加 2. 指で動かす 3. 右下の四角でサイズ変更 4. 設備を追加 5. 寸法を手入力
+            </div>
+          </section>
+
+          <aside class="planner-side">
+            <section class="card" style="padding: 14px;">
+              <h3 class="section-title" style="font-size: 18px;">部屋を追加</h3>
+              <div class="room-palette" id="roomPalette"></div>
+            </section>
+
+            <section class="card" style="padding: 14px;">
+              <h3 class="section-title" style="font-size: 18px;">建具・設備を置く</h3>
+              <div class="fixture-palette" id="fixturePalette"></div>
+            </section>
+
+            <section class="card" style="padding: 14px;">
+              <h3 class="section-title" style="font-size: 18px;">選んだ部屋の寸法</h3>
+              <p class="section-note" style="margin-bottom: 12px;">部屋を押すと、ここで横幅と縦幅をmmで入れられます。</p>
+              <div class="field">
+                <span class="label">選択中</span>
+                <div class="input" id="selectedRoomName" style="background: #f8fafc;">未選択</div>
+              </div>
+              <div class="field-row" style="margin-top: 12px;">
+                <div class="field">
+                  <span class="label">横寸法（mm）</span>
+                  <input class="input" id="roomWidthInput" inputmode="numeric" placeholder="例：3600" />
+                </div>
+                <div class="field">
+                  <span class="label">縦寸法（mm）</span>
+                  <input class="input" id="roomHeightInput" inputmode="numeric" placeholder="例：2400" />
+                </div>
+              </div>
+            </section>
+
+            <section class="card" style="padding: 14px;">
+              <h3 class="section-title" style="font-size: 18px;">新人チェックリスト</h3>
+              <div class="checklist-grid" id="checklistGrid"></div>
+            </section>
+
+            <section class="card" style="padding: 14px;">
+              <h3 class="section-title" style="font-size: 18px;">添付した現場写真</h3>
+              <div class="photo-list" id="roomPhotoList"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top: 16px;">
+        <h2 class="section-title">6. PDFプレビュー</h2>
         <p class="section-note">ここにA4縦の指示書イメージが表示されます。PDF作成ボタンでそのまま保存できます。</p>
         <div class="preview-frame">
           <div class="sheet" id="sheet">
@@ -541,6 +837,17 @@
                 <div class="hit-layer hidden" id="sheetTextLayer"></div>
               </div>
             </div>
+
+            <h3 class="sheet-subtitle">間取りメモ</h3>
+            <div class="plan-preview" id="sheetPlanBoard">
+              <div id="sheetPlanEmpty" style="padding: 120px 20px; text-align: center; color: #64748b;">ここに間取りメモが表示されます</div>
+            </div>
+
+            <h3 class="sheet-subtitle">新人チェック</h3>
+            <div class="sheet-checklist" id="sheetChecklist"></div>
+
+            <h3 class="sheet-subtitle">添付写真</h3>
+            <div class="sheet-photo-grid" id="sheetRoomPhotos"></div>
           </div>
         </div>
       </section>
@@ -549,6 +856,16 @@
     <script>
       const storageKey = "genba-zumen-memo-public";
       const presetMemoList = ["ここ補修", "要確認", "既存利用", "配管注意", "ここ解体", "ここ新設", "幅 900mm", "高さ 1800mm"];
+      const roomTypes = ["リビング", "キッチン", "洋室", "和室", "トイレ", "洗面", "浴室", "玄関", "廊下", "収納"];
+      const fixtureTypes = ["ドア", "引戸", "窓", "キッチン", "トイレ", "浴室", "洗面"];
+      const checklistItems = [
+        { key: "photoTaken", label: "写真を撮ったか" },
+        { key: "measured", label: "寸法を測ったか" },
+        { key: "windowChecked", label: "窓の位置を確認したか" },
+        { key: "doorChecked", label: "ドアの開き方向を確認したか" },
+        { key: "outletChecked", label: "コンセント位置を確認したか" },
+        { key: "plumbingChecked", label: "水道・排水位置を確認したか" }
+      ];
       const state = {
         formData: {
           siteName: "",
@@ -567,7 +884,13 @@
         tool: null,
         selectedId: null,
         draftShape: null,
-        dragState: null
+        dragState: null,
+        planRooms: [],
+        planFixtures: [],
+        selectedPlanId: null,
+        planDrag: null,
+        roomPhotos: [],
+        checklist: Object.fromEntries(checklistItems.map((item) => [item.key, false]))
       };
 
       const formNames = Object.keys(state.formData);
@@ -592,6 +915,22 @@
       const sheetEmpty = document.getElementById("sheetEmpty");
       const sheetSvgLayer = document.getElementById("sheetSvgLayer");
       const sheetTextLayer = document.getElementById("sheetTextLayer");
+      const roomPalette = document.getElementById("roomPalette");
+      const fixturePalette = document.getElementById("fixturePalette");
+      const plannerBoard = document.getElementById("plannerBoard");
+      const plannerEmpty = document.getElementById("plannerEmpty");
+      const plannerGuide = document.getElementById("plannerGuide");
+      const selectedRoomName = document.getElementById("selectedRoomName");
+      const roomWidthInput = document.getElementById("roomWidthInput");
+      const roomHeightInput = document.getElementById("roomHeightInput");
+      const checklistGrid = document.getElementById("checklistGrid");
+      const roomPhotoInput = document.getElementById("roomPhotoInput");
+      const addRoomPhotoButton = document.getElementById("addRoomPhotoButton");
+      const roomPhotoList = document.getElementById("roomPhotoList");
+      const sheetPlanBoard = document.getElementById("sheetPlanBoard");
+      const sheetPlanEmpty = document.getElementById("sheetPlanEmpty");
+      const sheetChecklist = document.getElementById("sheetChecklist");
+      const sheetRoomPhotos = document.getElementById("sheetRoomPhotos");
 
       function uid() {
         return `memo-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -606,7 +945,11 @@
           formData: state.formData,
           imageSrc: state.imageSrc,
           annotations: state.annotations,
-          draftMemo: state.draftMemo
+          draftMemo: state.draftMemo,
+          planRooms: state.planRooms,
+          planFixtures: state.planFixtures,
+          roomPhotos: state.roomPhotos,
+          checklist: state.checklist
         }));
       }
 
@@ -618,6 +961,10 @@
           state.imageSrc = saved.imageSrc || "";
           state.annotations = Array.isArray(saved.annotations) ? saved.annotations : [];
           state.draftMemo = saved.draftMemo || "";
+          state.planRooms = Array.isArray(saved.planRooms) ? saved.planRooms : [];
+          state.planFixtures = Array.isArray(saved.planFixtures) ? saved.planFixtures : [];
+          state.roomPhotos = Array.isArray(saved.roomPhotos) ? saved.roomPhotos : [];
+          state.checklist = { ...state.checklist, ...(saved.checklist || {}) };
         } catch (error) {
           console.error(error);
         }
@@ -642,6 +989,14 @@
         return "通常表示中。使いたいボタンを押してから写真を操作してください。";
       }
 
+      function getPlannerGuideText() {
+        const room = state.planRooms.find((item) => item.id === state.selectedPlanId);
+        const fixture = state.planFixtures.find((item) => item.id === state.selectedPlanId);
+        if (room) return `${room.name} を選択中。指で動かせます。右下の四角で大きさも変えられます。`;
+        if (fixture) return `${fixture.name} を選択中。指で動かして位置を合わせてください。`;
+        return "部屋を追加して、指で動かしながら現場用の簡易間取りを作ってください。";
+      }
+
       function normalizedPoint(event) {
         const rect = board.getBoundingClientRect();
         return {
@@ -657,6 +1012,207 @@
           width: Math.max(Math.abs(shape.endX - shape.startX), 0.01),
           height: Math.max(Math.abs(shape.endY - shape.startY), 0.01)
         };
+      }
+
+      function formatMillimeter(value) {
+        return value ? `${value}mm` : "未入力";
+      }
+
+      function getSelectedRoom() {
+        return state.planRooms.find((item) => item.id === state.selectedPlanId) || null;
+      }
+
+      function getPlanPoint(event) {
+        const rect = plannerBoard.getBoundingClientRect();
+        return {
+          x: clamp((event.clientX - rect.left) / rect.width, 0, 1),
+          y: clamp((event.clientY - rect.top) / rect.height, 0, 1)
+        };
+      }
+
+      function roomStyle(room) {
+        return {
+          left: `${room.x * 100}%`,
+          top: `${room.y * 100}%`,
+          width: `${room.width * 100}%`,
+          height: `${room.height * 100}%`
+        };
+      }
+
+      function fixtureStyle(item) {
+        return {
+          left: `${item.x * 100}%`,
+          top: `${item.y * 100}%`
+        };
+      }
+
+      function renderPlanBoard(target, interactive) {
+        target.querySelectorAll(".room-box, .fixture-item").forEach((node) => node.remove());
+
+        state.planRooms.forEach((room) => {
+          const box = document.createElement("div");
+          box.className = `room-box${room.id === state.selectedPlanId && interactive ? " selected" : ""}`;
+          Object.assign(box.style, roomStyle(room));
+          box.dataset.id = room.id;
+          box.dataset.kind = "room";
+          box.innerHTML = `
+            <div class="room-name">${room.name}</div>
+            <div class="room-size">横 ${formatMillimeter(room.widthMm)}<br>縦 ${formatMillimeter(room.heightMm)}</div>
+            ${interactive ? '<div class="room-handle" data-role="resize"></div>' : ""}
+          `;
+          if (interactive) {
+            box.addEventListener("pointerdown", handlePlanPointerDown);
+            box.addEventListener("click", () => {
+              state.selectedPlanId = room.id;
+              render();
+            });
+          }
+          target.appendChild(box);
+        });
+
+        state.planFixtures.forEach((item) => {
+          const chip = document.createElement("div");
+          chip.className = `fixture-item${item.id === state.selectedPlanId && interactive ? " selected" : ""}`;
+          Object.assign(chip.style, fixtureStyle(item));
+          chip.dataset.id = item.id;
+          chip.dataset.kind = "fixture";
+          chip.textContent = item.name;
+          if (interactive) {
+            chip.addEventListener("pointerdown", handlePlanPointerDown);
+            chip.addEventListener("click", () => {
+              state.selectedPlanId = item.id;
+              render();
+            });
+          }
+          target.appendChild(chip);
+        });
+      }
+
+      function updateRoomInputs() {
+        const room = getSelectedRoom();
+        if (!room) {
+          selectedRoomName.textContent = "未選択";
+          roomWidthInput.value = "";
+          roomHeightInput.value = "";
+          roomWidthInput.disabled = true;
+          roomHeightInput.disabled = true;
+          return;
+        }
+        selectedRoomName.textContent = room.name;
+        roomWidthInput.disabled = false;
+        roomHeightInput.disabled = false;
+        roomWidthInput.value = room.widthMm || "";
+        roomHeightInput.value = room.heightMm || "";
+      }
+
+      function addRoom(name) {
+        state.planRooms.push({
+          id: uid(),
+          name,
+          x: 0.08 + (state.planRooms.length % 3) * 0.08,
+          y: 0.08 + (state.planRooms.length % 4) * 0.06,
+          width: 0.28,
+          height: 0.2,
+          widthMm: "",
+          heightMm: ""
+        });
+        state.selectedPlanId = state.planRooms[state.planRooms.length - 1].id;
+        render();
+      }
+
+      function addFixture(name) {
+        state.planFixtures.push({
+          id: uid(),
+          name,
+          x: 0.1 + (state.planFixtures.length % 4) * 0.12,
+          y: 0.1 + (state.planFixtures.length % 5) * 0.08
+        });
+        state.selectedPlanId = state.planFixtures[state.planFixtures.length - 1].id;
+        render();
+      }
+
+      function moveRoom(room, dx, dy) {
+        room.x = clamp(room.x + dx, 0, 1 - room.width);
+        room.y = clamp(room.y + dy, 0, 1 - room.height);
+      }
+
+      function resizeRoom(room, dx, dy) {
+        room.width = clamp(room.width + dx, 0.12, 1 - room.x);
+        room.height = clamp(room.height + dy, 0.1, 1 - room.y);
+      }
+
+      function moveFixture(item, dx, dy) {
+        item.x = clamp(item.x + dx, 0.01, 0.92);
+        item.y = clamp(item.y + dy, 0.01, 0.92);
+      }
+
+      function handlePlanPointerDown(event) {
+        event.stopPropagation();
+        const current = event.currentTarget;
+        const id = current.dataset.id;
+        const kind = current.dataset.kind;
+        if (!id || !kind) return;
+        const point = getPlanPoint(event);
+        const mode = event.target.dataset.role === "resize" ? "resize" : "move";
+        state.selectedPlanId = id;
+        state.planDrag = { id, kind, mode, pointerId: event.pointerId, lastX: point.x, lastY: point.y };
+        plannerBoard.setPointerCapture(event.pointerId);
+        render();
+      }
+
+      function handlePlanMove(event) {
+        if (!state.planDrag || state.planDrag.pointerId !== event.pointerId) return;
+        const point = getPlanPoint(event);
+        const dx = point.x - state.planDrag.lastX;
+        const dy = point.y - state.planDrag.lastY;
+        state.planDrag.lastX = point.x;
+        state.planDrag.lastY = point.y;
+
+        if (state.planDrag.kind === "room") {
+          const room = state.planRooms.find((item) => item.id === state.planDrag.id);
+          if (!room) return;
+          if (state.planDrag.mode === "resize") {
+            resizeRoom(room, dx, dy);
+          } else {
+            moveRoom(room, dx, dy);
+          }
+        } else {
+          const fixture = state.planFixtures.find((item) => item.id === state.planDrag.id);
+          if (!fixture) return;
+          moveFixture(fixture, dx, dy);
+        }
+        render();
+      }
+
+      function endPlanPointer(event) {
+        if (state.planDrag && state.planDrag.pointerId === event.pointerId) {
+          state.planDrag = null;
+          render();
+        }
+      }
+
+      function renderChecklist() {
+        checklistGrid.innerHTML = "";
+        checklistItems.forEach((item) => {
+          const label = document.createElement("label");
+          label.className = "check-item";
+          label.innerHTML = `<input type="checkbox" data-key="${item.key}" ${state.checklist[item.key] ? "checked" : ""}><span>${item.label}</span>`;
+          checklistGrid.appendChild(label);
+        });
+      }
+
+      function renderRoomPhotos() {
+        roomPhotoList.innerHTML = "";
+        if (!state.roomPhotos.length) {
+          roomPhotoList.innerHTML = '<div class="board-note" style="grid-column: 1 / -1;">まだ添付写真はありません。</div>';
+          return;
+        }
+        state.roomPhotos.forEach((photo, index) => {
+          const card = document.createElement("div");
+          card.className = "attached-photo";
+          card.innerHTML = `<img src="${photo.src}" alt="添付写真 ${index + 1}"><div class="attached-photo-label">${photo.label}</div>`;
+          roomPhotoList.appendChild(card);
+        });
       }
 
       function drawSvg(targetSvg, list, selectedId) {
@@ -744,6 +1300,29 @@
         }
         drawSvg(sheetSvgLayer, state.annotations, null);
         drawTextLayer(sheetTextLayer, state.annotations, null, false);
+
+        renderPlanBoard(sheetPlanBoard, false);
+        sheetPlanEmpty.style.display = state.planRooms.length || state.planFixtures.length ? "none" : "block";
+
+        sheetChecklist.innerHTML = "";
+        checklistItems.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "sheet-check";
+          div.textContent = `${state.checklist[item.key] ? "✓" : "□"} ${item.label}`;
+          sheetChecklist.appendChild(div);
+        });
+
+        sheetRoomPhotos.innerHTML = "";
+        if (!state.roomPhotos.length) {
+          sheetRoomPhotos.innerHTML = '<div class="sheet-box full">添付写真はまだありません。</div>';
+        } else {
+          state.roomPhotos.forEach((photo) => {
+            const card = document.createElement("div");
+            card.className = "sheet-photo-card";
+            card.innerHTML = `<img src="${photo.src}" alt="${photo.label}"><div>${photo.label}</div>`;
+            sheetRoomPhotos.appendChild(card);
+          });
+        }
       }
 
       function render() {
@@ -775,6 +1354,12 @@
         drawSvg(svgLayer, renderList, state.selectedId || "draft-shape");
         drawTextLayer(hitLayer, state.annotations, state.selectedId, true);
         drawHitLayer(hitLayer, state.annotations, state.selectedId);
+        plannerEmpty.style.display = state.planRooms.length || state.planFixtures.length ? "none" : "flex";
+        plannerGuide.textContent = getPlannerGuideText();
+        renderPlanBoard(plannerBoard, true);
+        updateRoomInputs();
+        renderChecklist();
+        renderRoomPhotos();
         syncSheet();
         saveState();
       }
@@ -836,8 +1421,8 @@
       }
 
       async function exportPdf() {
-        if (!state.imageSrc) {
-          window.alert("先に写真を追加してください。");
+        if (!state.imageSrc && !state.planRooms.length && !state.roomPhotos.length) {
+          window.alert("写真メモか間取りメモを先に入れてください。");
           return;
         }
         pdfButton.disabled = true;
@@ -937,6 +1522,15 @@
 
       board.addEventListener("pointerup", endPointer);
       board.addEventListener("pointercancel", endPointer);
+      plannerBoard.addEventListener("pointermove", handlePlanMove);
+      plannerBoard.addEventListener("pointerup", endPlanPointer);
+      plannerBoard.addEventListener("pointercancel", endPlanPointer);
+      plannerBoard.addEventListener("click", (event) => {
+        if (event.target === plannerBoard) {
+          state.selectedPlanId = null;
+          render();
+        }
+      });
 
       pickImageButton.addEventListener("click", () => imageInput.click());
       imageInput.addEventListener("change", async (event) => {
@@ -968,9 +1562,17 @@
       });
 
       deleteButton.addEventListener("click", () => {
-        if (!state.selectedId) return;
-        state.annotations = state.annotations.filter((item) => item.id !== state.selectedId);
-        state.selectedId = null;
+        if (state.selectedId) {
+          state.annotations = state.annotations.filter((item) => item.id !== state.selectedId);
+          state.selectedId = null;
+          render();
+          return;
+        }
+        if (state.selectedPlanId) {
+          state.planRooms = state.planRooms.filter((item) => item.id !== state.selectedPlanId);
+          state.planFixtures = state.planFixtures.filter((item) => item.id !== state.selectedPlanId);
+          state.selectedPlanId = null;
+        }
         render();
       });
 
@@ -994,6 +1596,12 @@
         state.tool = null;
         state.selectedId = null;
         state.draftShape = null;
+        state.planRooms = [];
+        state.planFixtures = [];
+        state.selectedPlanId = null;
+        state.planDrag = null;
+        state.roomPhotos = [];
+        state.checklist = Object.fromEntries(checklistItems.map((item) => [item.key, false]));
         localStorage.removeItem(storageKey);
         render();
       });
@@ -1012,6 +1620,48 @@
         render();
       });
 
+      roomWidthInput.addEventListener("input", (event) => {
+        const room = getSelectedRoom();
+        if (!room) return;
+        room.widthMm = event.target.value.replace(/[^\d]/g, "");
+        render();
+      });
+
+      roomHeightInput.addEventListener("input", (event) => {
+        const room = getSelectedRoom();
+        if (!room) return;
+        room.heightMm = event.target.value.replace(/[^\d]/g, "");
+        render();
+      });
+
+      checklistGrid.addEventListener("change", (event) => {
+        const key = event.target.dataset.key;
+        if (!key) return;
+        state.checklist[key] = Boolean(event.target.checked);
+        render();
+      });
+
+      addRoomPhotoButton.addEventListener("click", () => roomPhotoInput.click());
+      roomPhotoInput.addEventListener("change", async (event) => {
+        const files = [...(event.target.files || [])];
+        if (!files.length) return;
+        try {
+          for (const file of files) {
+            state.roomPhotos.push({
+              id: uid(),
+              label: file.name,
+              src: await loadImageFile(file)
+            });
+          }
+          render();
+        } catch (error) {
+          console.error(error);
+          window.alert("添付写真の読み込みに失敗しました。");
+        } finally {
+          event.target.value = "";
+        }
+      });
+
       presetMemoList.forEach((text) => {
         const button = document.createElement("button");
         button.type = "button";
@@ -1024,6 +1674,24 @@
           render();
         });
         presetList.appendChild(button);
+      });
+
+      roomTypes.forEach((name) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "room-btn";
+        button.textContent = name;
+        button.addEventListener("click", () => addRoom(name));
+        roomPalette.appendChild(button);
+      });
+
+      fixtureTypes.forEach((name) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "fixture-btn";
+        button.textContent = name;
+        button.addEventListener("click", () => addFixture(name));
+        fixturePalette.appendChild(button);
       });
 
       loadState();

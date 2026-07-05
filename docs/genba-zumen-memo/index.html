@@ -810,8 +810,8 @@
             </section>
 
             <section class="card" style="padding: 14px;">
-              <h3 class="section-title" style="font-size: 18px;">選んだ部屋の寸法</h3>
-              <p class="section-note" style="margin-bottom: 12px;">部屋を押すと、ここで横幅と縦幅をmmで入れられます。</p>
+              <h3 class="section-title" style="font-size: 18px;">選んだ部屋・設備の寸法</h3>
+              <p class="section-note" style="margin-bottom: 12px;">部屋や設備を押すと、ここで横幅と縦幅をmmで入れられます。</p>
               <div class="field">
                 <span class="label">選択中</span>
                 <div class="input" id="selectedRoomName" style="background: #f8fafc;">未選択</div>
@@ -909,6 +909,27 @@
       const presetMemoList = ["ここ補修", "要確認", "既存利用", "配管注意", "ここ解体", "ここ新設", "幅 900mm", "高さ 1800mm"];
       const roomTypes = ["LD", "キッチン", "洋室", "和室", "トイレ", "洗面", "浴室", "玄関", "廊下", "収納"];
       const fixtureTypes = ["ドア", "引戸", "窓", "キッチン", "トイレ", "浴室", "洗面"];
+      const roomDefaults = {
+        LD: { widthMm: 5400, heightMm: 3600 },
+        キッチン: { widthMm: 3600, heightMm: 1800 },
+        洋室: { widthMm: 3600, heightMm: 2700 },
+        和室: { widthMm: 3600, heightMm: 2700 },
+        トイレ: { widthMm: 1800, heightMm: 900 },
+        洗面: { widthMm: 1800, heightMm: 1800 },
+        浴室: { widthMm: 1800, heightMm: 1800 },
+        玄関: { widthMm: 1800, heightMm: 1800 },
+        廊下: { widthMm: 1000, heightMm: 3600 },
+        収納: { widthMm: 1800, heightMm: 900 }
+      };
+      const fixtureDefaults = {
+        ドア: { widthMm: 800, heightMm: 2000 },
+        引戸: { widthMm: 1600, heightMm: 2000 },
+        窓: { widthMm: 1700, heightMm: 1100 },
+        キッチン: { widthMm: 2550, heightMm: 650 },
+        トイレ: { widthMm: 800, heightMm: 1600 },
+        浴室: { widthMm: 1600, heightMm: 1600 },
+        洗面: { widthMm: 750, heightMm: 600 }
+      };
       const checklistItems = [
         { key: "photoTaken", label: "写真を撮ったか" },
         { key: "measured", label: "寸法を測ったか" },
@@ -1030,12 +1051,24 @@
           state.annotations = Array.isArray(saved.annotations) ? saved.annotations : [];
           state.draftMemo = saved.draftMemo || "";
           state.planRooms = Array.isArray(saved.planRooms)
-            ? saved.planRooms.map((room) => ({
-                ...room,
-                name: room.name === "リビング" ? "LD" : room.name
-              }))
+            ? saved.planRooms.map((room) => {
+                const nextRoom = {
+                  ...room,
+                  name: room.name === "リビング" ? "LD" : room.name
+                };
+                const defaults = roomDefaults[nextRoom.name] || { widthMm: 3600, heightMm: 2400 };
+                normalizePlanItemSize(nextRoom, defaults.widthMm, defaults.heightMm);
+                return nextRoom;
+              })
             : [];
-          state.planFixtures = Array.isArray(saved.planFixtures) ? saved.planFixtures : [];
+          state.planFixtures = Array.isArray(saved.planFixtures)
+            ? saved.planFixtures.map((item) => {
+                const nextItem = { ...item };
+                const defaults = fixtureDefaults[nextItem.name] || { widthMm: 1200, heightMm: 1200 };
+                normalizePlanItemSize(nextItem, defaults.widthMm, defaults.heightMm);
+                return nextItem;
+              })
+            : [];
           state.planZoom = typeof saved.planZoom === "number" ? saved.planZoom : 1;
           state.roomPhotos = Array.isArray(saved.roomPhotos) ? saved.roomPhotos : [];
           state.checklist = { ...state.checklist, ...(saved.checklist || {}) };
@@ -1093,6 +1126,11 @@
         return value ? `${value}mm` : "未入力";
       }
 
+      function formatPlanSize(widthMm, heightMm) {
+        if (!widthMm || !heightMm) return "未入力";
+        return `${widthMm}×${heightMm}mm`;
+      }
+
       function sizeToMillimeters(size, gridCount) {
         return String(Math.max(PLAN_CELL_MM, Math.round(size * gridCount * PLAN_CELL_MM)));
       }
@@ -1105,6 +1143,10 @@
 
       function getSelectedRoom() {
         return state.planRooms.find((item) => item.id === state.selectedPlanId) || null;
+      }
+
+      function getSelectedPlanItem() {
+        return getSelectedRoom() || state.planFixtures.find((item) => item.id === state.selectedPlanId) || null;
       }
 
       function getPlanPoint(event) {
@@ -1136,6 +1178,46 @@
         }
       }
 
+      function normalizePlanItemSize(item, defaultWidthMm, defaultHeightMm) {
+        item.widthMm = String(Number(item.widthMm) || defaultWidthMm);
+        item.heightMm = String(Number(item.heightMm) || defaultHeightMm);
+        item.width = Number(item.width) || millimetersToSize(item.widthMm, PLAN_GRID_COLS);
+        item.height = Number(item.height) || millimetersToSize(item.heightMm, PLAN_GRID_ROWS);
+        item.x = clamp(Number(item.x) || 0.08, 0, 0.98);
+        item.y = clamp(Number(item.y) || 0.08, 0, 0.98);
+        syncRoomSizeFromMillimeters(item);
+      }
+
+      function getVisiblePlanPlacement(width, height) {
+        const surfaceWidth = getPlanSurfaceWidth(state.planZoom);
+        const surfaceHeight = getPlanSurfaceHeight(state.planZoom);
+        const visibleLeft = plannerBoard.scrollLeft;
+        const visibleTop = plannerBoard.scrollTop;
+        const visibleWidth = plannerBoard.clientWidth || surfaceWidth;
+        const visibleHeight = plannerBoard.clientHeight || surfaceHeight;
+        const centerX = visibleLeft + visibleWidth / 2;
+        const centerY = visibleTop + visibleHeight / 2;
+        const normalizedX = centerX / surfaceWidth - width / 2;
+        const normalizedY = centerY / surfaceHeight - height / 2;
+
+        return {
+          x: clamp(normalizedX, 0, 1 - width),
+          y: clamp(normalizedY, 0, 1 - height)
+        };
+      }
+
+      function scrollPlanItemIntoView(item) {
+        const surfaceWidth = getPlanSurfaceWidth(state.planZoom);
+        const surfaceHeight = getPlanSurfaceHeight(state.planZoom);
+        const left = item.x * surfaceWidth;
+        const top = item.y * surfaceHeight;
+        const width = item.width * surfaceWidth;
+        const height = item.height * surfaceHeight;
+
+        plannerBoard.scrollLeft = Math.max(0, left - (plannerBoard.clientWidth - width) / 2);
+        plannerBoard.scrollTop = Math.max(0, top - (plannerBoard.clientHeight - height) / 2);
+      }
+
       function roomStyle(room) {
         return {
           left: `${room.x * 100}%`,
@@ -1148,7 +1230,9 @@
       function fixtureStyle(item) {
         return {
           left: `${item.x * 100}%`,
-          top: `${item.y * 100}%`
+          top: `${item.y * 100}%`,
+          width: `${item.width * 100}%`,
+          height: `${item.height * 100}%`
         };
       }
 
@@ -1163,7 +1247,7 @@
           box.dataset.kind = "room";
           box.innerHTML = `
             <div class="room-name">${room.name}</div>
-            <div class="room-size">横 ${formatMillimeter(room.widthMm)}<br>縦 ${formatMillimeter(room.heightMm)}</div>
+            <div class="room-size">${formatPlanSize(room.widthMm, room.heightMm)}</div>
             ${interactive ? '<div class="room-handle" data-role="resize"></div>' : ""}
           `;
           if (interactive) {
@@ -1182,7 +1266,11 @@
           Object.assign(chip.style, fixtureStyle(item));
           chip.dataset.id = item.id;
           chip.dataset.kind = "fixture";
-          chip.textContent = item.name;
+          chip.innerHTML = `
+            <div class="room-name">${item.name}</div>
+            <div class="room-size">${formatPlanSize(item.widthMm, item.heightMm)}</div>
+            ${interactive ? '<div class="room-handle" data-role="resize"></div>' : ""}
+          `;
           if (interactive) {
             chip.addEventListener("pointerdown", handlePlanPointerDown);
             chip.addEventListener("click", () => {
@@ -1195,8 +1283,8 @@
       }
 
       function updateRoomInputs() {
-        const room = getSelectedRoom();
-        if (!room) {
+        const item = getSelectedPlanItem();
+        if (!item) {
           selectedRoomName.textContent = "未選択";
           roomWidthInput.value = "";
           roomHeightInput.value = "";
@@ -1204,39 +1292,53 @@
           roomHeightInput.disabled = true;
           return;
         }
-        selectedRoomName.textContent = room.name;
+        selectedRoomName.textContent = item.name;
         roomWidthInput.disabled = false;
         roomHeightInput.disabled = false;
-        roomWidthInput.value = room.widthMm || "";
-        roomHeightInput.value = room.heightMm || "";
+        roomWidthInput.value = item.widthMm || "";
+        roomHeightInput.value = item.heightMm || "";
       }
 
       function addRoom(name) {
-        const defaultWidthMm = 3600;
-        const defaultHeightMm = 2400;
+        const defaults = roomDefaults[name] || { widthMm: 3600, heightMm: 2400 };
+        const width = defaults.widthMm / PLAN_CELL_MM / PLAN_GRID_COLS;
+        const height = defaults.heightMm / PLAN_CELL_MM / PLAN_GRID_ROWS;
+        const placement = getVisiblePlanPlacement(width, height);
         state.planRooms.push({
           id: uid(),
           name,
-          x: 0.08 + (state.planRooms.length % 3) * 0.08,
-          y: 0.08 + (state.planRooms.length % 4) * 0.06,
-          width: defaultWidthMm / PLAN_CELL_MM / PLAN_GRID_COLS,
-          height: defaultHeightMm / PLAN_CELL_MM / PLAN_GRID_ROWS,
-          widthMm: String(defaultWidthMm),
-          heightMm: String(defaultHeightMm)
+          x: placement.x,
+          y: placement.y,
+          width,
+          height,
+          widthMm: String(defaults.widthMm),
+          heightMm: String(defaults.heightMm)
         });
-        state.selectedPlanId = state.planRooms[state.planRooms.length - 1].id;
+        const item = state.planRooms[state.planRooms.length - 1];
+        state.selectedPlanId = item.id;
         render();
+        scrollPlanItemIntoView(item);
       }
 
       function addFixture(name) {
+        const defaults = fixtureDefaults[name] || { widthMm: 1200, heightMm: 1200 };
+        const width = defaults.widthMm / PLAN_CELL_MM / PLAN_GRID_COLS;
+        const height = defaults.heightMm / PLAN_CELL_MM / PLAN_GRID_ROWS;
+        const placement = getVisiblePlanPlacement(width, height);
         state.planFixtures.push({
           id: uid(),
           name,
-          x: 0.1 + (state.planFixtures.length % 4) * 0.12,
-          y: 0.1 + (state.planFixtures.length % 5) * 0.08
+          x: placement.x,
+          y: placement.y,
+          width,
+          height,
+          widthMm: String(defaults.widthMm),
+          heightMm: String(defaults.heightMm)
         });
-        state.selectedPlanId = state.planFixtures[state.planFixtures.length - 1].id;
+        const item = state.planFixtures[state.planFixtures.length - 1];
+        state.selectedPlanId = item.id;
         render();
+        scrollPlanItemIntoView(item);
       }
 
       function undoPlanItem() {
@@ -1277,8 +1379,14 @@
       }
 
       function moveFixture(item, dx, dy) {
-        item.x = clamp(item.x + dx, 0.01, 0.92);
-        item.y = clamp(item.y + dy, 0.01, 0.92);
+        item.x = clamp(item.x + dx, 0, 1 - item.width);
+        item.y = clamp(item.y + dy, 0, 1 - item.height);
+      }
+
+      function resizeFixture(item, dx, dy) {
+        item.width = clamp(item.width + dx, 1 / PLAN_GRID_COLS, 1 - item.x);
+        item.height = clamp(item.height + dy, 1 / PLAN_GRID_ROWS, 1 - item.y);
+        syncRoomMillimetersFromSize(item);
       }
 
       function handlePlanPointerDown(event) {
@@ -1314,7 +1422,11 @@
         } else {
           const fixture = state.planFixtures.find((item) => item.id === state.planDrag.id);
           if (!fixture) return;
-          moveFixture(fixture, dx, dy);
+          if (state.planDrag.mode === "resize") {
+            resizeFixture(fixture, dx, dy);
+          } else {
+            moveFixture(fixture, dx, dy);
+          }
         }
         render();
       }
@@ -1767,18 +1879,18 @@
       });
 
       roomWidthInput.addEventListener("input", (event) => {
-        const room = getSelectedRoom();
-        if (!room) return;
-        room.widthMm = event.target.value.replace(/[^\d]/g, "");
-        syncRoomSizeFromMillimeters(room);
+        const item = getSelectedPlanItem();
+        if (!item) return;
+        item.widthMm = event.target.value.replace(/[^\d]/g, "");
+        syncRoomSizeFromMillimeters(item);
         render();
       });
 
       roomHeightInput.addEventListener("input", (event) => {
-        const room = getSelectedRoom();
-        if (!room) return;
-        room.heightMm = event.target.value.replace(/[^\d]/g, "");
-        syncRoomSizeFromMillimeters(room);
+        const item = getSelectedPlanItem();
+        if (!item) return;
+        item.heightMm = event.target.value.replace(/[^\d]/g, "");
+        syncRoomSizeFromMillimeters(item);
         render();
       });
 

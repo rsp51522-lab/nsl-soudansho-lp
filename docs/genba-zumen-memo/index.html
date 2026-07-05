@@ -282,6 +282,12 @@
         border: 1px solid #dbe3ef;
       }
 
+      .planner-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
       .room-palette,
       .fixture-palette,
       .checklist-grid,
@@ -303,15 +309,34 @@
 
       .planner-board {
         position: relative;
-        min-height: 480px;
-        border: 2px solid #94a3b8;
+        height: 360px;
+        min-height: 360px;
+        border: 2px dashed #94a3b8;
+        background: #f8fafc;
+        overflow: auto;
+        touch-action: none;
+      }
+
+      .planner-surface {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+        --plan-scale: 1;
+        transition: width 0.15s ease, height 0.15s ease, background-size 0.15s ease;
         background:
           linear-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px),
           linear-gradient(90deg, rgba(148, 163, 184, 0.2) 1px, transparent 1px),
           #f8fbff;
-        background-size: 24px 24px;
-        overflow: hidden;
-        touch-action: none;
+      }
+
+      .planner-zoom-status {
+        padding: 10px 12px;
+        border: 1px solid #dbe3ef;
+        background: #f8fbff;
+        color: #0f4c81;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
       }
 
       .planner-empty {
@@ -329,9 +354,9 @@
 
       .room-box {
         position: absolute;
-        border: 3px solid #0369a1;
+        border: calc(3px * var(--plan-scale)) solid #0369a1;
         background: rgba(224, 242, 254, 0.88);
-        padding: 10px 12px 28px;
+        padding: calc(10px * var(--plan-scale)) calc(12px * var(--plan-scale)) calc(28px * var(--plan-scale));
         user-select: none;
         cursor: grab;
       }
@@ -342,39 +367,39 @@
       }
 
       .room-name {
-        font-size: 15px;
+        font-size: calc(11px * var(--plan-scale));
         font-weight: 700;
         color: #0f172a;
       }
 
       .room-size {
-        margin-top: 4px;
-        font-size: 12px;
+        margin-top: calc(4px * var(--plan-scale));
+        font-size: calc(9px * var(--plan-scale));
         color: #334155;
         line-height: 1.5;
       }
 
       .room-handle {
         position: absolute;
-        right: 6px;
-        bottom: 6px;
-        width: 18px;
-        height: 18px;
+        right: calc(6px * var(--plan-scale));
+        bottom: calc(6px * var(--plan-scale));
+        width: calc(18px * var(--plan-scale));
+        height: calc(18px * var(--plan-scale));
         background: #0369a1;
-        border: 2px solid #ffffff;
+        border: calc(2px * var(--plan-scale)) solid #ffffff;
         cursor: nwse-resize;
       }
 
       .fixture-item {
         position: absolute;
-        min-width: 54px;
-        border: 2px solid #16a34a;
+        min-width: calc(54px * var(--plan-scale));
+        border: calc(2px * var(--plan-scale)) solid #16a34a;
         background: rgba(240, 253, 244, 0.95);
         color: #166534;
-        font-size: 12px;
+        font-size: calc(12px * var(--plan-scale));
         font-weight: 700;
         text-align: center;
-        padding: 6px 8px;
+        padding: calc(6px * var(--plan-scale)) calc(8px * var(--plan-scale));
         user-select: none;
         cursor: grab;
       }
@@ -436,6 +461,7 @@
 
       .plan-preview {
         position: relative;
+        height: 320px;
         min-height: 320px;
         border: 1px solid #dbe3ef;
         background:
@@ -585,11 +611,17 @@
 
       .sheet-photo-inner {
         position: relative;
+        height: 320px;
+        min-height: 320px;
+        background: #f8fafc;
       }
 
       .sheet-photo img {
         display: block;
         width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #e2e8f0;
       }
 
       .hidden {
@@ -694,6 +726,19 @@
       </section>
 
       <section class="main-grid" style="margin-top: 16px;">
+        <section class="panel card">
+          <h2 class="section-title">4. 操作ボタン</h2>
+          <p class="section-note">スマホで押しやすい大きさにしています。</p>
+          <div class="toolbar">
+            <button class="action-btn" data-tool="text" type="button">文字入力</button>
+            <button class="action-btn" data-tool="arrow" type="button">矢印</button>
+            <button class="action-btn" data-tool="circle" type="button">丸印</button>
+            <button class="action-btn" data-tool="rect" type="button">四角</button>
+            <button class="action-btn" id="undoButton" type="button">元に戻す</button>
+            <button class="action-btn warn" id="deleteButton" type="button">削除</button>
+          </div>
+        </section>
+
         <section class="panel card board-wrap">
           <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center;">
             <div>
@@ -716,21 +761,8 @@
           </div>
 
           <div class="board-note" id="modeGuide">通常表示中。使いたいボタンを押してから写真を操作してください。</div>
-        </section>
-
-        <section class="panel card">
-          <h2 class="section-title">4. 操作ボタン</h2>
-          <p class="section-note">スマホで押しやすい大きさにしています。</p>
-          <div class="toolbar">
-            <button class="action-btn" data-tool="text" type="button">文字入力</button>
-            <button class="action-btn" data-tool="arrow" type="button">矢印</button>
-            <button class="action-btn" data-tool="circle" type="button">丸印</button>
-            <button class="action-btn" data-tool="rect" type="button">四角</button>
-            <button class="action-btn" id="undoButton" type="button">元に戻す</button>
-            <button class="action-btn warn" id="deleteButton" type="button">削除</button>
-          </div>
-          <button class="action-btn primary" id="pdfButton" style="width: 100%; margin-top: 12px;" type="button">PDF作成</button>
-          <button class="action-btn" id="clearButton" style="width: 100%; margin-top: 10px;" type="button">入力内容を初期化</button>
+          <button class="action-btn primary" id="pdfButton" style="width: 100%;" type="button">PDF作成</button>
+          <button class="action-btn" id="clearButton" style="width: 100%;" type="button">入力内容を初期化</button>
         </section>
       </section>
 
@@ -738,7 +770,7 @@
         <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;">
           <div>
             <h2 class="section-title" style="margin-bottom: 4px;">5. 間取りメモ</h2>
-            <p class="section-note">部屋を追加して動かし、設備を置いて、現場で使う簡易間取りを作れます。</p>
+            <p class="section-note">部屋を追加して動かし、設備を置いて、現場で使う簡易間取りを作れます。1マスは 300mm × 300mm です。</p>
           </div>
           <button class="action-btn primary" id="addRoomPhotoButton" type="button">現場写真を添付</button>
         </div>
@@ -748,11 +780,21 @@
         <div class="planner-grid" style="margin-top: 14px;">
           <section class="stack">
             <div class="planner-board" id="plannerBoard">
+              <div class="planner-surface" id="plannerSurface"></div>
               <div class="planner-empty" id="plannerEmpty">下の「部屋を追加」から始めてください</div>
             </div>
 
+            <div class="planner-actions">
+              <button class="action-btn" id="planUndoButton" type="button">元に戻す</button>
+              <button class="action-btn warn" id="planDeleteButton" type="button">削除</button>
+              <button class="action-btn" id="planZoomInButton" type="button">＋ 拡大</button>
+              <button class="action-btn" id="planZoomOutButton" type="button">－ 縮小</button>
+            </div>
+
+            <div class="planner-zoom-status" id="planZoomStatus">表示倍率：100%</div>
+
             <div class="board-note" id="plannerGuide">
-              使い方：1. 部屋を追加 2. 指で動かす 3. 右下の四角でサイズ変更 4. 設備を追加 5. 寸法を手入力
+              下のボタンで間取りメモの元に戻す・削除ができます。
             </div>
           </section>
 
@@ -840,6 +882,7 @@
 
             <h3 class="sheet-subtitle">間取りメモ</h3>
             <div class="plan-preview" id="sheetPlanBoard">
+              <div class="planner-surface" id="sheetPlanSurface"></div>
               <div id="sheetPlanEmpty" style="padding: 120px 20px; text-align: center; color: #64748b;">ここに間取りメモが表示されます</div>
             </div>
 
@@ -855,8 +898,16 @@
 
     <script>
       const storageKey = "genba-zumen-memo-public";
+      const PLAN_CELL_MM = 300;
+      const PLAN_GRID_COLS = 600;
+      const PLAN_GRID_ROWS = 400;
+      const PLAN_CELL_PX = 10;
+      const PLAN_ZOOM_MIN = 0.75;
+      const PLAN_ZOOM_MAX = 2;
+      const PLAN_ZOOM_STEP = 0.25;
+      const SHEET_PLAN_ZOOM = 0.5;
       const presetMemoList = ["ここ補修", "要確認", "既存利用", "配管注意", "ここ解体", "ここ新設", "幅 900mm", "高さ 1800mm"];
-      const roomTypes = ["リビング", "キッチン", "洋室", "和室", "トイレ", "洗面", "浴室", "玄関", "廊下", "収納"];
+      const roomTypes = ["LD", "キッチン", "洋室", "和室", "トイレ", "洗面", "浴室", "玄関", "廊下", "収納"];
       const fixtureTypes = ["ドア", "引戸", "窓", "キッチン", "トイレ", "浴室", "洗面"];
       const checklistItems = [
         { key: "photoTaken", label: "写真を撮ったか" },
@@ -889,6 +940,7 @@
         planFixtures: [],
         selectedPlanId: null,
         planDrag: null,
+        planZoom: 1,
         roomPhotos: [],
         checklist: Object.fromEntries(checklistItems.map((item) => [item.key, false]))
       };
@@ -918,8 +970,14 @@
       const roomPalette = document.getElementById("roomPalette");
       const fixturePalette = document.getElementById("fixturePalette");
       const plannerBoard = document.getElementById("plannerBoard");
+      const plannerSurface = document.getElementById("plannerSurface");
       const plannerEmpty = document.getElementById("plannerEmpty");
       const plannerGuide = document.getElementById("plannerGuide");
+      const planUndoButton = document.getElementById("planUndoButton");
+      const planDeleteButton = document.getElementById("planDeleteButton");
+      const planZoomInButton = document.getElementById("planZoomInButton");
+      const planZoomOutButton = document.getElementById("planZoomOutButton");
+      const planZoomStatus = document.getElementById("planZoomStatus");
       const selectedRoomName = document.getElementById("selectedRoomName");
       const roomWidthInput = document.getElementById("roomWidthInput");
       const roomHeightInput = document.getElementById("roomHeightInput");
@@ -928,6 +986,7 @@
       const addRoomPhotoButton = document.getElementById("addRoomPhotoButton");
       const roomPhotoList = document.getElementById("roomPhotoList");
       const sheetPlanBoard = document.getElementById("sheetPlanBoard");
+      const sheetPlanSurface = document.getElementById("sheetPlanSurface");
       const sheetPlanEmpty = document.getElementById("sheetPlanEmpty");
       const sheetChecklist = document.getElementById("sheetChecklist");
       const sheetRoomPhotos = document.getElementById("sheetRoomPhotos");
@@ -940,6 +999,14 @@
         return Math.min(Math.max(value, min), max);
       }
 
+      function getPlanSurfaceWidth(zoom = state.planZoom) {
+        return PLAN_GRID_COLS * PLAN_CELL_PX * zoom;
+      }
+
+      function getPlanSurfaceHeight(zoom = state.planZoom) {
+        return PLAN_GRID_ROWS * PLAN_CELL_PX * zoom;
+      }
+
       function saveState() {
         localStorage.setItem(storageKey, JSON.stringify({
           formData: state.formData,
@@ -948,6 +1015,7 @@
           draftMemo: state.draftMemo,
           planRooms: state.planRooms,
           planFixtures: state.planFixtures,
+          planZoom: state.planZoom,
           roomPhotos: state.roomPhotos,
           checklist: state.checklist
         }));
@@ -961,8 +1029,14 @@
           state.imageSrc = saved.imageSrc || "";
           state.annotations = Array.isArray(saved.annotations) ? saved.annotations : [];
           state.draftMemo = saved.draftMemo || "";
-          state.planRooms = Array.isArray(saved.planRooms) ? saved.planRooms : [];
+          state.planRooms = Array.isArray(saved.planRooms)
+            ? saved.planRooms.map((room) => ({
+                ...room,
+                name: room.name === "リビング" ? "LD" : room.name
+              }))
+            : [];
           state.planFixtures = Array.isArray(saved.planFixtures) ? saved.planFixtures : [];
+          state.planZoom = typeof saved.planZoom === "number" ? saved.planZoom : 1;
           state.roomPhotos = Array.isArray(saved.roomPhotos) ? saved.roomPhotos : [];
           state.checklist = { ...state.checklist, ...(saved.checklist || {}) };
         } catch (error) {
@@ -990,11 +1064,12 @@
       }
 
       function getPlannerGuideText() {
+        const zoomText = `表示倍率 ${Math.round(state.planZoom * 100)}%`;
         const room = state.planRooms.find((item) => item.id === state.selectedPlanId);
         const fixture = state.planFixtures.find((item) => item.id === state.selectedPlanId);
-        if (room) return `${room.name} を選択中。指で動かせます。右下の四角で大きさも変えられます。`;
-        if (fixture) return `${fixture.name} を選択中。指で動かして位置を合わせてください。`;
-        return "部屋を追加して、指で動かしながら現場用の簡易間取りを作ってください。";
+        if (room) return `${room.name} を選択中。指で動かせます。右下の四角で大きさも変えられます。${zoomText}`;
+        if (fixture) return `${fixture.name} を選択中。指で動かして位置を合わせてください。${zoomText}`;
+        return `部屋や設備を追加して、下のボタンで元に戻す・削除ができます。${zoomText}`;
       }
 
       function normalizedPoint(event) {
@@ -1018,16 +1093,47 @@
         return value ? `${value}mm` : "未入力";
       }
 
+      function sizeToMillimeters(size, gridCount) {
+        return String(Math.max(PLAN_CELL_MM, Math.round(size * gridCount * PLAN_CELL_MM)));
+      }
+
+      function millimetersToSize(mmValue, gridCount) {
+        const number = Number(mmValue);
+        if (!number) return 0;
+        return number / PLAN_CELL_MM / gridCount;
+      }
+
       function getSelectedRoom() {
         return state.planRooms.find((item) => item.id === state.selectedPlanId) || null;
       }
 
       function getPlanPoint(event) {
-        const rect = plannerBoard.getBoundingClientRect();
+        const rect = plannerSurface.getBoundingClientRect();
         return {
           x: clamp((event.clientX - rect.left) / rect.width, 0, 1),
           y: clamp((event.clientY - rect.top) / rect.height, 0, 1)
         };
+      }
+
+      function applyPlanSurfaceSize(target, zoom) {
+        target.style.width = `${getPlanSurfaceWidth(zoom)}px`;
+        target.style.height = `${getPlanSurfaceHeight(zoom)}px`;
+        target.style.backgroundSize = `${PLAN_CELL_PX * zoom}px ${PLAN_CELL_PX * zoom}px`;
+        target.style.setProperty("--plan-scale", String(zoom));
+      }
+
+      function syncRoomMillimetersFromSize(room) {
+        room.widthMm = sizeToMillimeters(room.width, PLAN_GRID_COLS);
+        room.heightMm = sizeToMillimeters(room.height, PLAN_GRID_ROWS);
+      }
+
+      function syncRoomSizeFromMillimeters(room) {
+        if (room.widthMm) {
+          room.width = clamp(millimetersToSize(room.widthMm, PLAN_GRID_COLS), 1 / PLAN_GRID_COLS, 1 - room.x);
+        }
+        if (room.heightMm) {
+          room.height = clamp(millimetersToSize(room.heightMm, PLAN_GRID_ROWS), 1 / PLAN_GRID_ROWS, 1 - room.y);
+        }
       }
 
       function roomStyle(room) {
@@ -1106,15 +1212,17 @@
       }
 
       function addRoom(name) {
+        const defaultWidthMm = 3600;
+        const defaultHeightMm = 2400;
         state.planRooms.push({
           id: uid(),
           name,
           x: 0.08 + (state.planRooms.length % 3) * 0.08,
           y: 0.08 + (state.planRooms.length % 4) * 0.06,
-          width: 0.28,
-          height: 0.2,
-          widthMm: "",
-          heightMm: ""
+          width: defaultWidthMm / PLAN_CELL_MM / PLAN_GRID_COLS,
+          height: defaultHeightMm / PLAN_CELL_MM / PLAN_GRID_ROWS,
+          widthMm: String(defaultWidthMm),
+          heightMm: String(defaultHeightMm)
         });
         state.selectedPlanId = state.planRooms[state.planRooms.length - 1].id;
         render();
@@ -1131,14 +1239,41 @@
         render();
       }
 
+      function undoPlanItem() {
+        if (state.planFixtures.length) {
+          const removed = state.planFixtures.pop();
+          if (state.selectedPlanId === removed?.id) {
+            state.selectedPlanId = null;
+          }
+          render();
+          return;
+        }
+        if (state.planRooms.length) {
+          const removed = state.planRooms.pop();
+          if (state.selectedPlanId === removed?.id) {
+            state.selectedPlanId = null;
+          }
+          render();
+        }
+      }
+
+      function deleteSelectedPlanItem() {
+        if (!state.selectedPlanId) return;
+        state.planRooms = state.planRooms.filter((item) => item.id !== state.selectedPlanId);
+        state.planFixtures = state.planFixtures.filter((item) => item.id !== state.selectedPlanId);
+        state.selectedPlanId = null;
+        render();
+      }
+
       function moveRoom(room, dx, dy) {
         room.x = clamp(room.x + dx, 0, 1 - room.width);
         room.y = clamp(room.y + dy, 0, 1 - room.height);
       }
 
       function resizeRoom(room, dx, dy) {
-        room.width = clamp(room.width + dx, 0.12, 1 - room.x);
-        room.height = clamp(room.height + dy, 0.1, 1 - room.y);
+        room.width = clamp(room.width + dx, 1 / PLAN_GRID_COLS, 1 - room.x);
+        room.height = clamp(room.height + dy, 1 / PLAN_GRID_ROWS, 1 - room.y);
+        syncRoomMillimetersFromSize(room);
       }
 
       function moveFixture(item, dx, dy) {
@@ -1301,7 +1436,8 @@
         drawSvg(sheetSvgLayer, state.annotations, null);
         drawTextLayer(sheetTextLayer, state.annotations, null, false);
 
-        renderPlanBoard(sheetPlanBoard, false);
+        applyPlanSurfaceSize(sheetPlanSurface, SHEET_PLAN_ZOOM);
+        renderPlanBoard(sheetPlanSurface, false);
         sheetPlanEmpty.style.display = state.planRooms.length || state.planFixtures.length ? "none" : "block";
 
         sheetChecklist.innerHTML = "";
@@ -1354,9 +1490,11 @@
         drawSvg(svgLayer, renderList, state.selectedId || "draft-shape");
         drawTextLayer(hitLayer, state.annotations, state.selectedId, true);
         drawHitLayer(hitLayer, state.annotations, state.selectedId);
+        applyPlanSurfaceSize(plannerSurface, state.planZoom);
         plannerEmpty.style.display = state.planRooms.length || state.planFixtures.length ? "none" : "flex";
+        planZoomStatus.textContent = `表示倍率：${Math.round(state.planZoom * 100)}%`;
         plannerGuide.textContent = getPlannerGuideText();
-        renderPlanBoard(plannerBoard, true);
+        renderPlanBoard(plannerSurface, true);
         updateRoomInputs();
         renderChecklist();
         renderRoomPhotos();
@@ -1525,8 +1663,8 @@
       plannerBoard.addEventListener("pointermove", handlePlanMove);
       plannerBoard.addEventListener("pointerup", endPlanPointer);
       plannerBoard.addEventListener("pointercancel", endPlanPointer);
-      plannerBoard.addEventListener("click", (event) => {
-        if (event.target === plannerBoard) {
+      plannerSurface.addEventListener("click", (event) => {
+        if (event.target === plannerSurface) {
           state.selectedPlanId = null;
           render();
         }
@@ -1568,11 +1706,18 @@
           render();
           return;
         }
-        if (state.selectedPlanId) {
-          state.planRooms = state.planRooms.filter((item) => item.id !== state.selectedPlanId);
-          state.planFixtures = state.planFixtures.filter((item) => item.id !== state.selectedPlanId);
-          state.selectedPlanId = null;
-        }
+        if (state.selectedPlanId) return deleteSelectedPlanItem();
+        render();
+      });
+
+      planUndoButton.addEventListener("click", undoPlanItem);
+      planDeleteButton.addEventListener("click", deleteSelectedPlanItem);
+      planZoomInButton.addEventListener("click", () => {
+        state.planZoom = clamp(state.planZoom + PLAN_ZOOM_STEP, PLAN_ZOOM_MIN, PLAN_ZOOM_MAX);
+        render();
+      });
+      planZoomOutButton.addEventListener("click", () => {
+        state.planZoom = clamp(state.planZoom - PLAN_ZOOM_STEP, PLAN_ZOOM_MIN, PLAN_ZOOM_MAX);
         render();
       });
 
@@ -1600,6 +1745,7 @@
         state.planFixtures = [];
         state.selectedPlanId = null;
         state.planDrag = null;
+        state.planZoom = 1;
         state.roomPhotos = [];
         state.checklist = Object.fromEntries(checklistItems.map((item) => [item.key, false]));
         localStorage.removeItem(storageKey);
@@ -1624,6 +1770,7 @@
         const room = getSelectedRoom();
         if (!room) return;
         room.widthMm = event.target.value.replace(/[^\d]/g, "");
+        syncRoomSizeFromMillimeters(room);
         render();
       });
 
@@ -1631,6 +1778,7 @@
         const room = getSelectedRoom();
         if (!room) return;
         room.heightMm = event.target.value.replace(/[^\d]/g, "");
+        syncRoomSizeFromMillimeters(room);
         render();
       });
 

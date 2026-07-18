@@ -3,152 +3,389 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1d4ed8">
-<title>PK勤怠Bot</title>
+<meta name="theme-color" content="#1f73ff">
+<title>新規LINE勤怠</title>
 <style>
 :root {
-  --bg: #f6f7fb;
-  --card: #ffffff;
-  --text: #111827;
-  --sub: #6b7280;
-  --line: #9ca3af;
-  --blue: #1d4ed8;
-  --shadow: 0 16px 40px rgba(17, 24, 39, 0.10);
+  --page-bg: #ffffff;
+  --text: #06152f;
+  --sub: #52657f;
+  --frame: #6f819b;
+  --panel-bg: #f7fbff;
+  --shadow: 0 18px 40px rgba(15, 30, 60, 0.08);
 }
+
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(29, 78, 216, 0.10), transparent 34%),
-    linear-gradient(180deg, #fcfdff 0%, var(--bg) 100%);
+    radial-gradient(circle at 16% 10%, rgba(31, 115, 255, 0.08), transparent 24%),
+    radial-gradient(circle at 82% 14%, rgba(31, 115, 255, 0.05), transparent 20%),
+    linear-gradient(180deg, #ffffff 0%, #fcfdff 100%);
 }
+
 .wrap {
-  max-width: 560px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 18px 14px 48px;
+  padding: 28px 18px 44px;
 }
-.card {
-  background: var(--card);
-  border: 1px solid #d8dee9;
-  border-radius: 24px;
-  padding: 22px 18px;
+
+.shell {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 34px;
+  font-size: clamp(42px, 6.2vw, 82px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+  font-weight: 900;
+}
+
+.lead {
+  margin: 0 0 40px;
+  font-size: clamp(18px, 2.4vw, 34px);
+  line-height: 1.55;
+  color: var(--sub);
+}
+
+.meta,
+.status,
+.note {
   box-shadow: var(--shadow);
 }
-.eyebrow {
-  display: inline-block;
-  margin-bottom: 10px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #eff6ff;
-  color: var(--blue);
-  font-size: 12px;
-  font-weight: 700;
-}
-h1 {
-  margin: 0 0 8px;
-  font-size: 26px;
-  line-height: 1.25;
-}
-p {
-  margin: 0 0 16px;
-  color: var(--sub);
-  line-height: 1.7;
-}
-.meta,
-.status {
-  margin-bottom: 14px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-}
+
 .meta {
-  font-weight: 700;
+  margin-bottom: 36px;
+  padding: 28px 32px;
+  border: 6px double var(--frame);
+  background: #ffffff;
+  font-size: clamp(20px, 2.8vw, 34px);
+  font-weight: 800;
 }
-.status strong {
-  color: var(--blue);
-}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-items: stretch;
+  gap: 30px;
+  margin-bottom: 34px;
 }
-.grid > * {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-}
+
 .button {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
-  min-height: 78px;
-  padding: 14px 10px;
-  border-radius: 18px;
-  border: 2px solid var(--line);
+  min-height: 268px;
+  padding: 26px 34px;
+  border-radius: 0;
+  border: 6px double currentColor;
   background: #ffffff;
-  color: #111827;
-  font-size: 20px;
-  font-weight: 800;
-  text-align: center;
-  text-decoration: none;
-  display: flex;
+  color: #1f73ff;
+  display: grid;
+  grid-template-columns: 168px 1px 1fr 74px;
   align-items: center;
-  justify-content: center;
-  line-height: 1;
-  white-space: nowrap;
-  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 12px 24px rgba(17, 24, 39, 0.06);
+  column-gap: 34px;
+  text-decoration: none;
+  text-align: left;
   cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
+
 .button:active,
 .button.is-active {
-  transform: translateY(2px);
+  transform: scale(0.99);
+  opacity: 0.94;
 }
+
 .button.is-done {
-  background: var(--blue);
   color: #ffffff;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.18);
 }
+
+.button-green { color: #17b32a; }
+.button-red { color: #ff2d2d; }
+.button-blue { color: #1f73ff; }
+.button-orange { color: #f5a100; }
+.button-purple { color: #8d60e8; }
+.button-cyan { color: #17a8bc; }
+
+.button-green.is-done { background: #17b32a; }
+.button-red.is-done { background: #ff2d2d; }
+.button-blue.is-done { background: #1f73ff; }
+.button-orange.is-done { background: #f5a100; }
+.button-purple.is-done { background: #8d60e8; }
+.button-cyan.is-done { background: #17a8bc; }
+
+.button-icon {
+  width: 140px;
+  height: 140px;
+  border: 3px solid currentColor;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.7);
+}
+
+.button-icon svg {
+  width: 92px;
+  height: 92px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.button-divider {
+  width: 1px;
+  height: 66%;
+  background: rgba(111, 129, 155, 0.82);
+}
+
+.button.is-done .button-divider {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.button.is-done .button-icon {
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+.button-label {
+  display: block;
+  font-size: clamp(24px, 3vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #06152f;
+  white-space: nowrap;
+}
+
+.button.is-done .button-label {
+  color: #ffffff;
+}
+
+.button-arrow {
+  display: grid;
+  place-items: center;
+}
+
+.button-arrow svg {
+  width: 44px;
+  height: 44px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.status {
+  padding: 24px 28px;
+  border: 4px double #d4e1f1;
+  background: var(--panel-bg);
+  font-size: clamp(18px, 2vw, 28px);
+  color: var(--sub);
+  line-height: 1.7;
+}
+
+.status strong {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
 .note {
   margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: #fffbeb;
-  border: 1px solid #facc15;
-  color: #92400e;
+  padding: 18px 22px;
+  border: 3px solid #dfe8f3;
+  background: #fbfdff;
+  font-size: 15px;
+  color: #617289;
   line-height: 1.7;
-  font-size: 14px;
 }
+
 .hidden-frame {
   width: 0;
   height: 0;
   border: 0;
   position: absolute;
 }
+
+@media (max-width: 900px) {
+  .wrap {
+    padding: 20px 14px 36px;
+  }
+
+  h1 {
+    margin-bottom: 22px;
+  }
+
+  .lead {
+    margin-bottom: 24px;
+  }
+
+  .meta {
+    margin-bottom: 22px;
+    padding: 20px 18px;
+    border-width: 4px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  .button {
+    min-height: 132px;
+    padding: 14px 12px;
+    border-width: 4px;
+    grid-template-columns: 58px 1px 1fr 22px;
+    column-gap: 12px;
+  }
+
+  .button-icon {
+    width: 48px;
+    height: 48px;
+    border-width: 2px;
+    border-radius: 10px;
+  }
+
+  .button-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .button-arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .button-label {
+    font-size: 20px;
+  }
+
+  .status {
+    padding: 18px 16px;
+    border-width: 3px;
+  }
+
+  .note {
+    padding: 16px 14px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrap {
+    padding: 16px 10px 28px;
+  }
+
+  .meta {
+    padding: 16px 14px;
+    font-size: 15px;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+
+  .button {
+    min-height: 112px;
+    padding: 10px 10px;
+    grid-template-columns: 44px 1px 1fr 18px;
+    column-gap: 10px;
+  }
+
+  .button-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .button-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .button-label {
+    font-size: 14px;
+  }
+
+  .button-arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+}
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
-      <div class="eyebrow">LINE WORKS用</div>
-      <h1>PK勤怠Bot</h1>
-      <p>名前入力は不要です。押したボタンだけで記録します。</p>
+    <div class="shell">
+      <h1>新規LINE勤怠</h1>
+      <p class="lead">名前入力は不要です。押したボタンだけで勤怠を記録します。</p>
+
       <div class="meta">送信者：PK asano</div>
-      <div class="status" id="status"><strong>準備完了</strong><br>下のボタンを押してください。</div>
 
       <div class="grid">
-        <button class="button action-button" type="button" data-action="出勤">出勤</button>
-        <button class="button action-button" type="button" data-action="退勤">退勤</button>
-        <button class="button action-button" type="button" data-action="有給">有給</button>
-        <a class="button menu-button" href="https://receipt-manager-line-ino.vercel.app/receipts?token=5464fc1fbb860eca1988ee95e81457ce8a3abe8410b5138759e0fe326dd0d633" target="_blank" rel="noopener">経費</a>
-        <a class="button menu-button" href="https://docs.google.com/forms/d/e/1FAIpQLSeIRWHeCwt2ceYJOkXPrVxw49ay0FWE05zymPRCPGgBv7fu0g/viewform" target="_blank" rel="noopener">報告</a>
-        <a class="button menu-button" href="https://docs.google.com/spreadsheets/d/1fynM9IjvJi22hKuX5SbUh-7f-bl0LcSILpemWQG8cRo/edit?usp=drivesdk" target="_blank" rel="noopener">確認</a>
+        <button class="button action-button button-green" type="button" data-action="出勤">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v12a2 2 0 0 1-2 2H8"/><path d="M14 3v5h5"/><path d="M10 21a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M10 15v2.5"/><path d="M10 10V7"/><path d="M6 7h1"/><path d="M6 11h1"/></svg>
+          </span>
+          <span class="button-divider" aria-hidden="true"></span>
+          <span class="button-label">出勤</span>
+          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></span>
+        </button>
+
+        <button class="button action-button button-red" type="button" data-action="退勤">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M10 4h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7"/><path d="M10 8V4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M14 12H6"/><path d="m11 9-3 3 3 3"/></svg>
+          </span>
+          <span class="button-divider" aria-hidden="true"></span>
+          <span class="button-label">退勤</span>
+          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></span>
+        </button>
+
+        <a class="button menu-button button-blue" href="https://rsp51522-lab.github.io/nsl-soudansho-lp/kintai-leave/?screen=leave" target="_blank" rel="noopener">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/><path d="m9 15 2 2 4-4"/></svg>
+          </span>
+          <span class="button-divider" aria-hidden="true"></span>
+          <span class="button-label">有給</span>
+          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></span>
+        </a>
+
+        <a class="button menu-button button-orange" href="https://receipt-manager-line-ino.vercel.app/receipts?token=5464fc1fbb860eca1988ee95e81457ce8a3abe8410b5138759e0fe326dd0d633" target="_blank" rel="noopener">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 7h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3z"/><path d="M16 10h5v6h-5"/><circle cx="17" cy="13" r="1"/></svg>
+          </span>
+          <span class="button-divider" aria-hidden="true"></span>
+          <span class="button-label">経費</span>
+          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></span>
+        </a>
+
+        <a class="button menu-button button-purple" href="https://docs.google.com/forms/d/e/1FAIpQLSeIRWHeCwt2ceYJOkXPrVxw49ay0FWE05zymPRCPGgBv7fu0g/viewform" target="_blank" rel="noopener">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5"/><path d="M10 17v-4"/><path d="M14 17V9"/><path d="M18 17v-6"/></svg>
+          </span>
+          <span class="button-divider" aria-hidden="true"></span>
+          <span class="button-label">報告</span>
+          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></span>
+        </a>
+
+        <a class="button menu-button button-cyan" href="https://docs.google.com/spreadsheets/d/1fynM9IjvJi22hKuX5SbUh-7f-bl0LcSILpemWQG8cRo/edit?usp=drivesdk" target="_blank" rel="noopener">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.35-4.35"/></svg>
+          </span>
+          <span class="button-divider" aria-hidden="true"></span>
+          <span class="button-label">確認</span>
+          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 4 8 8-8 8"/></svg></span>
+        </a>
       </div>
+
+      <div class="status" id="status"><strong>準備完了</strong><br>下のボタンを押してください。</div>
 
       <div class="note">
         反映まで数秒かかる時があります。<br>
@@ -195,7 +432,7 @@ p {
       button.addEventListener('click', () => {
         clearStates();
         button.classList.add('is-done');
-        statusBox.innerHTML = '<strong>開きます</strong><br>' + button.textContent + 'の画面を開いています。';
+        statusBox.innerHTML = '<strong>開きます</strong><br>' + button.textContent.trim() + 'の画面を開いています。';
       });
     });
   </script>

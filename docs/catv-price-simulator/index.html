@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>固定費削減シミュレーター｜CATV乗り換え比較</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== ヘッダー ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <i class="fas fa-bolt"></i>
+      <span>固定費削減シミュレーター</span>
+    </div>
+    <p class="header-sub">現在のスマホ・光回線・通話・電話を入力するだけで、CATVへの乗り換え節約額を自動計算</p>
+  </div>
+</header>
+
+<!-- ===== メインコンテンツ ===== -->
+<main class="main-container">
+
+  <!-- STEP インジケーター -->
+  <div class="step-indicator">
+    <div class="step active" id="step-dot-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">光回線・電話を入力</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step active" id="step-dot-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">スマホ・通話を入力</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-dot-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">結果を確認</div>
+    </div>
+  </div>
+
+  <!-- ===== 入力セクション ===== -->
+  <section class="input-section card">
+    <h2 class="section-title">
+      <i class="fas fa-edit"></i> 現在の契約内容を入力
+    </h2>
+
+    <!-- ▼ 光回線入力 -->
+    <div class="input-block">
+      <h3 class="input-block-title">
+        <span class="badge badge-blue"><i class="fas fa-wifi"></i> 光回線</span>
+      </h3>
+      <div class="form-row form-row-3">
+        <div class="form-group">
+          <label for="fiber-carrier">キャリア・プロバイダー</label>
+          <select id="fiber-carrier" onchange="onFiberCarrierChange()">
+            <option value="">-- 選択してください --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fiber-plan">プラン</label>
+          <select id="fiber-plan" onchange="onFiberPlanChange()" disabled>
+            <option value="">-- キャリアを先に選択 --</option>
+          </select>
+        </div>
+        <div class="form-group price-display">
+          <label>月額料金</label>
+          <div class="price-box">
+            <span class="price-value" id="fiber-price">--</span>
+            <span class="price-unit">円/月</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▼ 光電話オプション -->
+      <div class="option-row" id="phone-option-row" style="display:none;">
+        <div class="option-label-area">
+          <span class="badge badge-phone"><i class="fas fa-phone-alt"></i> 光電話オプション</span>
+          <span class="option-hint">固定電話（光電話）を契約していますか？</span>
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="phone-option">光電話プラン</label>
+            <select id="phone-option" onchange="onPhoneOptionChange()">
+              <option value="">-- 選択してください --</option>
+            </select>
+          </div>
+          <div class="form-group price-display">
+            <label>月額料金</label>
+            <div class="price-box">
+              <span class="price-value" id="phone-price">--</span>
+              <span class="price-unit">円/月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ▼ スマホ入力 -->
+    <div class="input-block">
+      <h3 class="input-block-title">
+        <span class="badge badge-green"><i class="fas fa-mobile-alt"></i> スマートフォン</span>
+        <button class="btn-add" onclick="addSmartphoneRow()" id="add-smartphone-btn">
+          <i class="fas fa-plus"></i> 台数を追加（最大8台）
+        </button>
+      </h3>
+      <div id="smartphone-rows">
+        <!-- JS で動的生成 -->
+      </div>
+    </div>
+
+    <!-- 計算ボタン -->
+    <div class="calc-button-area">
+      <button class="btn-calc" id="calc-btn" onclick="calculate()">
+        <i class="fas fa-calculator"></i> 節約額を自動計算する
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== 結果セクション（初期は非表示） ===== -->
+  <section class="result-section" id="result-section" style="display:none;">
+
+    <!-- 節約サマリーバナー -->
+    <div class="saving-banner" id="saving-banner">
+      <div class="saving-banner-inner">
+        <div class="saving-item">
+          <div class="saving-label"><i class="fas fa-calendar-alt"></i> 月額節約額</div>
+          <div class="saving-value monthly" id="result-monthly">---</div>
+        </div>
+        <div class="saving-divider"></div>
+        <div class="saving-item">
+          <div class="saving-label"><i class="fas fa-calendar-check"></i> 年間節約額</div>
+          <div class="saving-value yearly" id="result-yearly">---</div>
+        </div>
+        <div class="saving-divider"></div>
+        <div class="saving-item">
+          <div class="saving-label"><i class="fas fa-piggy-bank"></i> 3年間の節約総額</div>
+          <div class="saving-value three-years" id="result-3years">---</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- セット割判定バッジ -->
+    <div id="set-discount-notice" class="set-discount-notice" style="display:none;"></div>
+
+    <!-- 比較カード -->
+    <div class="compare-cards">
+      <!-- 現在の料金 -->
+      <div class="compare-card current-card">
+        <div class="compare-card-header">
+          <i class="fas fa-file-invoice-dollar"></i> 現在の料金
+        </div>
+        <div class="compare-card-body" id="current-detail"></div>
+        <div class="compare-card-total">
+          <span>合計</span>
+          <span id="current-total-display">-- 円/月</span>
+        </div>
+      </div>
+
+      <!-- 矢印 -->
+      <div class="compare-arrow">
+        <div class="arrow-down">
+          <i class="fas fa-arrow-right"></i>
+          <span>乗り換え</span>
+        </div>
+      </div>
+
+      <!-- CATV料金 -->
+      <div class="compare-card catv-card">
+        <div class="compare-card-header catv-header">
+          <i class="fas fa-tv"></i> CATV乗り換え後
+        </div>
+        <div class="compare-card-body" id="catv-detail"></div>
+        <div class="compare-card-total catv-total">
+          <span>合計</span>
+          <span id="catv-total-display">-- 円/月</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- グラフ -->
+    <div class="card chart-card">
+      <h3 class="chart-title"><i class="fas fa-chart-bar"></i> 月額料金比較グラフ</h3>
+      <div style="height:440px; position:relative;">
+        <canvas id="compareChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 詳細テーブル -->
+    <div class="card table-card">
+      <h3 class="chart-title"><i class="fas fa-table"></i> 料金内訳詳細</h3>
+      <div class="table-responsive">
+        <table class="detail-table" id="detail-table">
+          <thead>
+            <tr>
+              <th>サービス</th>
+              <th>現在のキャリア/プラン</th>
+              <th class="text-right">現在の月額</th>
+              <th>CATVプラン</th>
+              <th class="text-right">CATV月額</th>
+              <th class="text-right">差額</th>
+            </tr>
+          </thead>
+          <tbody id="detail-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 注記 -->
+    <div class="notice-box">
+      <i class="fas fa-info-circle"></i>
+      <p>※ 表示料金はすべて税込みです。実際の料金はご利用状況・オプション・キャンペーン等により異なる場合があります。詳細はお近くのCATV窓口にてご確認ください。</p>
+    </div>
+
+    <!-- 問い合わせCTAバナー -->
+    <div class="inquiry-cta-banner">
+      <div class="inquiry-cta-inner">
+        <div class="inquiry-cta-text">
+          <i class="fas fa-envelope-open-text"></i>
+          <div>
+            <p class="inquiry-cta-title">この比較結果をそのまま担当者に送る</p>
+            <p class="inquiry-cta-sub">お名前と連絡先を入力するだけで、計算結果と一緒にお問い合わせできます</p>
+          </div>
+        </div>
+        <button class="btn-inquiry" onclick="openInquiryModal()">
+          <i class="fas fa-paper-plane"></i> 無料で問い合わせる
+        </button>
+      </div>
+    </div>
+
+    <!-- 再計算・印刷ボタン -->
+    <div class="recalc-area">
+      <button class="btn-recalc" onclick="scrollToTop()">
+        <i class="fas fa-redo"></i> 条件を変更して再計算
+      </button>
+      <button class="btn-print" onclick="window.print()">
+        <i class="fas fa-print"></i> 印刷する
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== 問い合わせモーダル ===== -->
+  <div class="modal-overlay" id="inquiry-modal" onclick="closeInquiryModalOutside(event)">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeInquiryModal()"><i class="fas fa-times"></i></button>
+
+      <div class="modal-header">
+        <div class="modal-icon"><i class="fas fa-paper-plane"></i></div>
+        <h2 class="modal-title">CATVへのお問い合わせ</h2>
+        <p class="modal-sub">計算結果を添えて担当者へ送信します</p>
+      </div>
+
+      <!-- 計算結果プレビュー -->
+      <div class="modal-result-preview" id="modal-result-preview"></div>
+
+      <!-- 入力フォーム -->
+      <div class="modal-form" id="modal-form">
+        <div class="form-group">
+          <label for="inquiry-name"><i class="fas fa-user"></i> お名前 <span class="required">必須</span></label>
+          <input type="text" id="inquiry-name" placeholder="例：山田 太郎" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="inquiry-tel"><i class="fas fa-phone"></i> 電話番号 <span class="required">必須</span></label>
+          <input type="tel" id="inquiry-tel" placeholder="例：090-1234-5678" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label for="inquiry-email"><i class="fas fa-envelope"></i> メールアドレス <span class="optional">任意</span></label>
+          <input type="email" id="inquiry-email" placeholder="例：example@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="inquiry-message"><i class="fas fa-comment-alt"></i> ご質問・備考 <span class="optional">任意</span></label>
+          <textarea id="inquiry-message" rows="3" placeholder="ご不明点やご要望があればお書きください"></textarea>
+        </div>
+
+        <div id="modal-error" class="modal-error" style="display:none;"></div>
+
+        <button class="btn-send" onclick="sendInquiry()">
+          <i class="fas fa-paper-plane"></i> 問い合わせを送信する
+        </button>
+        <p class="modal-note"><i class="fas fa-lock"></i> 入力情報は担当者（asano@nextsaleslab.com）にのみ送信されます</p>
+      </div>
+
+      <!-- 送信完了 -->
+      <div class="modal-success" id="modal-success" style="display:none;">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h3>送信完了！</h3>
+        <p>お問い合わせありがとうございます。<br>担当者より折り返しご連絡いたします。</p>
+        <button class="btn-recalc" onclick="closeInquiryModal()" style="margin-top:20px;">
+          <i class="fas fa-times"></i> 閉じる
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== フッター（印刷時は非表示） ===== -->
+<footer class="site-footer">
+  <p>© 2024 固定費削減シミュレーター｜料金は目安です。最新情報は各公式サイトでご確認ください。</p>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

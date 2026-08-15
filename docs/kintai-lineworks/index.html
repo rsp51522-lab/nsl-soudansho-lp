@@ -214,90 +214,108 @@ h1 {
   position: absolute;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .wrap {
-    padding: 20px 14px 36px;
+    max-width: 920px;
+    padding: 14px 12px 24px;
   }
 
   h1 {
-    margin-bottom: 22px;
+    margin-bottom: 10px;
+    font-size: clamp(30px, 4vw, 42px);
+    letter-spacing: -0.03em;
   }
 
   .lead {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    line-height: 1.35;
   }
 
   .meta {
-    margin-bottom: 22px;
-    padding: 20px 18px;
-    border-width: 4px;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-width: 3px;
+    font-size: 16px;
   }
 
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-    margin-bottom: 22px;
+    gap: 10px;
+    margin-bottom: 12px;
   }
 
   .button {
-    min-height: 132px;
-    padding: 14px 12px;
-    border-width: 4px;
-    grid-template-columns: 58px 1px 1fr 22px;
-    column-gap: 12px;
+    min-height: 86px;
+    padding: 10px 12px;
+    border-width: 3px;
+    grid-template-columns: 42px 1px 1fr 18px;
+    column-gap: 10px;
   }
 
   .button-icon {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     border-width: 2px;
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   .button-icon svg {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
   }
 
   .button-arrow svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
   .button-label {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .status {
-    padding: 18px 16px;
+    padding: 12px 14px;
     border-width: 3px;
+    font-size: 15px;
+    line-height: 1.45;
   }
 
   .note {
-    padding: 16px 14px;
-    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.5;
   }
 }
 
 @media (max-width: 480px) {
   .wrap {
-    padding: 16px 10px 28px;
+    padding: 12px 8px 20px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .lead {
+    font-size: 14px;
   }
 
   .meta {
-    padding: 16px 14px;
-    font-size: 15px;
+    padding: 10px 12px;
+    font-size: 14px;
   }
 
   .grid {
-    gap: 12px;
+    gap: 8px;
   }
 
   .button {
-    min-height: 112px;
-    padding: 10px 10px;
+    min-height: 82px;
+    padding: 8px 8px;
     grid-template-columns: 44px 1px 1fr 18px;
-    column-gap: 10px;
+    column-gap: 8px;
   }
 
   .button-icon {
